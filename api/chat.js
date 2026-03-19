@@ -1,30 +1,69 @@
-﻿const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+
 module.exports = async (req, res) => {
-    if (req.method !== 'POST') return res.status(405).json({ error: 'Método inválido' });
+    // Configuração de CORS para Vercel Serverless
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Método inválido' });
+    }
     
     const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) return res.status(500).json({ error: 'Chave ausente no Vercel' });
+    if (!apiKey) {
+        return res.status(500).json({ error: 'Configuração ausente', detalhes: 'GEMINI_API_KEY não encontrada no ambiente Vercel.' });
+    }
     
     try {
         const { userDesc, catalogData } = req.body;
         const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
         
-        const prompt = `Consultor Cepel Arte Decore. Regras: 1. Dê 2 dicas sucintas. 2. Nunca finalize os textos com afirmações e sim perguntas. O vendedor quem guia a conversa. 3. Escolha 1 produto de: ${catalogData}. Responda OBRIGATORIAMENTE em formato JSON válido, usando apenas as chaves: { "texto_dica": "sua dica", "produto_recomendado_id": "ID_DO_PRODUTO" }`;
-        
-        const result = await model.generateContent({
-            contents: [{ role: 'user', parts: [{ text: userDesc || "Preciso de um móvel" }] }],
-            systemInstruction: { parts: [{ text: prompt }] }
+        // Uso de model-config para garantir resposta JSON pura (Schema Enforcement)
+        const model = genAI.getGenerativeModel({ 
+            model: 'gemini-1.5-flash',
+            generationConfig: { responseMimeType: 'application/json' }
         });
         
-        let rawText = result.response.text();
+        const systemPrompt = `Você é um consultor e designer de interiores de alto padrão da loja 'Cepel Arte Decore'. 
+Seu objetivo é vender os produtos do catálogo apresentando dicas de design elegantes.
+
+REGRAS ABSOLUTAS:
+1. Forneça exatamente 2 dicas de decoração extremamente sucintas, profissionais e persuasivas.
+2. NUNCA finalize os seus textos com afirmações. Sempre termine com uma PERGUNTA instigante que guie o cliente para o atendimento (O vendedor é quem guia a conversa).
+3. Analise o catálogo abaixo e escolha obrigatoriamente 1 (um) produto que melhor se encaixe na descrição do cliente.
+
+CATÁLOGO ATUAL:
+${catalogData}
+
+Você deve responder OBRIGATORIAMENTE no formato JSON abaixo:
+{
+  "texto_dica": "Seu texto com as 2 dicas e a pergunta final de fechamento.",
+  "produto_recommended_id": "ID_DO_PRODUTO"
+}`;
+
+        const result = await model.generateContent({
+            contents: [{ role: 'user', parts: [{ text: userDesc || "Gostaria de renovar meu ambiente." }] }],
+            systemInstruction: { parts: [{ text: systemPrompt }] }
+        });
         
-        // Limpeza extrema: Remove formatações indesejadas que o Google costuma enviar
-        rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+        const responseText = result.response.text();
+        const aiResponse = JSON.parse(responseText);
+
+        // Mapeamento defensivo: garante que o frontend receba o que espera
+        const finalResponse = {
+            texto_dica: aiResponse.texto_dica || aiResponse.dica || "Confira nossas opções no catálogo!",
+            produto_recomendado_id: aiResponse.produto_recommended_id || aiResponse.produto_id || aiResponse.produto_recomendado_id
+        };
         
-        res.status(200).json(JSON.parse(rawText));
+        res.status(200).json(finalResponse);
         
     } catch (e) {
-        res.status(500).json({ error: 'Erro de comunicação', detalhes: e.message });
+        console.error("Erro Crítico no Chat API:", e);
+        res.status(500).json({ error: 'Erro de processamento', detalhes: e.message });
     }
 };

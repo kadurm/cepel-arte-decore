@@ -807,7 +807,11 @@
                     })
                 });
 
-                if (!response.ok) throw new Error('Erro na API');
+                if (!response.ok) {
+                    const errorJson = await response.json().catch(() => ({}));
+                    throw new Error(errorJson.detalhes || 'Falha na resposta do servidor.');
+                }
+                
                 const aiResponse = await response.json();
                 let htmlOutput = marked.parse(aiResponse.texto_dica);
 
@@ -837,7 +841,7 @@
 
             } catch (e) {
                 console.error(e);
-                aiOutput.innerHTML = `<p style="color: #d9534f; font-weight: bold; font-family: var(--font-logo);">Ops! Ocorreu um erro de conexão. Tente novamente.</p>`;
+                aiOutput.innerHTML = `<p style="color: #d9534f; font-weight: bold; font-family: var(--font-logo);">Ops! ${e.message}</p>`;
             } finally {
                 aiSubmitBtn.disabled = false; 
                 aiSubmitBtn.innerHTML = 'Gerar Dicas de Decoração';
