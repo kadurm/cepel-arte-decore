@@ -51,34 +51,9 @@
         }
         .header-content { display: flex; justify-content: space-between; align-items: center; height: 90px; }
         
-        /* Ajuste no Logo em Texto */
         .logo { display: flex; align-items: center; cursor: pointer; }
-        .logo-text {
-            position: relative;
-            display: inline-block;
-            padding-bottom: 8px; 
-            margin-top: 5px;
-        }
-        .logo-main {
-            font-family: var(--font-logo); 
-            font-weight: 600;
-            font-size: 46px;
-            color: #000000;
-            letter-spacing: -2px;
-            line-height: 1;
-            display: block;
-        }
-        .logo-sub {
-            position: absolute;
-            right: 0;
-            bottom: 0; 
-            font-family: var(--font-main);
-            font-weight: 400;
-            font-size: 10.5px;
-            color: var(--primary-graphic-color);
-            letter-spacing: 3.5px;
-            white-space: nowrap;
-        }
+        .logo-img { max-height: 60px; width: auto; object-fit: contain; transition: transform 0.3s ease; }
+        .logo-img:hover { transform: scale(1.02); }
         
         .nav-links { display: flex; gap: 25px; align-items: center; }
         .nav-links a { 
@@ -362,10 +337,7 @@
     <header>
         <div class="container header-content">
             <div class="logo" onclick="switchPage('home')" title="Página Inicial">
-                <div class="logo-text">
-                    <span class="logo-main">cepel</span>
-                    <span class="logo-sub">arte decore</span>
-                </div>
+                <img src="LogoCepel.png" alt="Cepel Arte Decore" class="logo-img">
             </div>
 
             <nav class="nav-links">
