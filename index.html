@@ -43,7 +43,7 @@
         }
         
         a { text-decoration: none; color: inherit; }
-        .container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        .container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 24px; }
 
         /* --- Cabeçalho Efeito Vidro --- */
         header { 
@@ -401,16 +401,18 @@
                 </div>
             </section>
 
-            <section id="avaliacoes" class="reviews container">
-                <h2 class="section-title">O que nossos clientes dizem</h2>
-                <div class="google-rating">
-                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                    <span style="font-family: var(--font-logo); font-weight: 600; margin-left: 10px; font-size: 16px;">5,0 (Avaliações no Google)</span>
-                </div>
+            <section id="avaliacoes" class="reviews">
+                <div class="container">
+                    <h2 class="section-title">O que nossos clientes dizem</h2>
+                    <div class="google-rating">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <span style="font-family: var(--font-logo); font-weight: 600; margin-left: 10px; font-size: 16px;">5,0 (Avaliações no Google)</span>
+                    </div>
 
-                <div class="reviews-grid" id="dynamic-reviews-grid">
-                    <div style="text-align: center; width: 100%; grid-column: 1 / -1; color: var(--primary-graphic-color); font-family: var(--font-logo); font-weight: 600;">
-                        <i class="fas fa-spinner fa-spin"></i> Sincronizando avaliações do Google...
+                    <div class="reviews-grid" id="dynamic-reviews-grid">
+                        <div style="text-align: center; width: 100%; grid-column: 1 / -1; color: var(--primary-graphic-color); font-family: var(--font-logo); font-weight: 600;">
+                            <i class="fas fa-spinner fa-spin"></i> Sincronizando avaliações do Google...
+                        </div>
                     </div>
                 </div>
             </section>
