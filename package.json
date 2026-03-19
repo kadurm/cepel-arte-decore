@@ -1,0 +1,23 @@
+{
+  "name": "site-cepel",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kadurm/cepel-arte-decore.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kadurm/cepel-arte-decore/issues"
+  },
+  "homepage": "https://github.com/kadurm/cepel-arte-decore#readme",
+  "description": "",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1"
+  }
+}
