@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cepel Arte Decore | Loja de Móveis em Bocaiúva - MG</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <style>
+        /* Variáveis de Tema */
+        :root {
+            --primary-graphic-color: #4A3B32; 
+            --text-dark-primary: #000000;      
+            --bg-color: transparent;              
+            --white: #FFFFFF;
+            --light-gray: #EEEEEE;
+            --font-logo: 'Poppins', sans-serif;
+            --font-main: 'Montserrat', sans-serif; 
+            --success-color: #25d366;
+        }
+
+        /* Reset Básico */
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        
+        body { 
+            background: radial-gradient(ellipse at bottom, #ffffff, #ffffff, #572e0c); 
+            background-attachment: fixed;
+            color: var(--text-dark-primary); 
+            font-family: var(--font-main); 
+            line-height: 1.6; 
+            overflow-x: hidden;
+        }
+        
+        a { text-decoration: none; color: inherit; }
+        .container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+        /* --- Cabeçalho Efeito Vidro --- */
+        header { 
+            background-color: rgba(255, 255, 255, 0.55); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px); 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.05); 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+        }
+        .header-content { display: flex; justify-content: space-between; align-items: center; height: 90px; }
+        
+        /* Ajuste no Logo em Texto */
+        .logo { display: flex; align-items: center; cursor: pointer; }
+        .logo-text {
+            position: relative;
+            display: inline-block;
+            padding-bottom: 8px; 
+            margin-top: 5px;
+        }
+        .logo-main {
+            font-family: var(--font-logo); 
+            font-weight: 600;
+            font-size: 46px;
+            color: #000000;
+            letter-spacing: -2px;
+            line-height: 1;
+            display: block;
+        }
+        .logo-sub {
+            position: absolute;
+            right: 0;
+            bottom: 0; 
+            font-family: var(--font-main);
+            font-weight: 400;
+            font-size: 10.5px;
+            color: var(--primary-graphic-color);
+            letter-spacing: 3.5px;
+            white-space: nowrap;
+        }
+        
+        .nav-links { display: flex; gap: 25px; align-items: center; }
+        .nav-links a { 
+            font-family: var(--font-logo); 
+            font-weight: 600; 
+            font-size: 15px; 
+            transition: color 0.3s ease; 
+            cursor: pointer; 
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary-graphic-color); }
+
+        /* Carrinho no Header */
+        .cart-icon-wrapper { position: relative; cursor: pointer; font-size: 20px; color: var(--primary-graphic-color); }
+        .cart-badge {
+            position: absolute; top: -8px; right: -10px; background-color: #d9534f; color: white;
+            font-size: 11px; font-weight: bold; width: 18px; height: 18px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-family: var(--font-logo);
+        }
+
+        /* Ocultar/Exibir Seções */
+        .page-view { display: none; }
+        .page-view.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Textos Secundários --- */
+        .secondary-text {
+            font-family: var(--font-main);
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            color: #555555;
+        }
+
+        /* --- Hero Section 3D --- */
+        .hero-3d-section { 
+            padding: 60px 20px 20px 20px; 
+            text-align: center; 
+            overflow: hidden; 
+        }
+        .hero-3d-section h1 { 
+            font-size: 42px; 
+            margin-bottom: 15px; 
+            line-height: 1.2; 
+            font-family: var(--font-logo); 
+            font-weight: 700; 
+            color: var(--text-dark-primary); 
+        }
+        @media (min-width: 768px) { .hero-3d-section h1 { font-size: 52px; } }
+        .hero-3d-section p { 
+            font-size: 18px; 
+            max-width: 700px; 
+            margin: 0 auto 10px auto; 
+        }
+
+        /* --- Carrossel 3D --- */
+        .carousel-container {
+            width: 100%;
+            height: 480px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: pan-y;
+            margin: 20px 0 40px 0;
+            cursor: grab;
+            user-select: none;
+        }
+        .carousel-container:active { cursor: grabbing; }
+        .carousel-scene {
+            perspective: 1200px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .carousel-cylinder {
+            position: relative;
+            transform-style: preserve-3d;
+        }
+        .carousel-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            -webkit-box-reflect: below 15px linear-gradient(transparent, transparent, rgba(0,0,0,0.3));
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: opacity 0.3s;
+        }
+        .carousel-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .cta-button { 
+            background-color: var(--primary-graphic-color); 
+            color: var(--white); 
+            padding: 18px 40px; 
+            font-size: 18px; 
+            font-family: var(--font-logo);
+            font-weight: 600; 
+            border-radius: 4px; 
+            display: inline-block; 
+            transition: all 0.3s ease; 
+            box-shadow: 0 4px 10px rgba(74, 59, 50, 0.3); 
+            cursor: pointer; 
+            border: 1px solid rgba(255, 255, 255, 0.6); 
+        }
+        .cta-button:hover { background-color: #3B2E28; transform: translateY(-2px); }
+        .cta-button:disabled { background-color: #cccccc; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        /* --- Consultoria IA Section --- */
+        .ai-advisor { padding: 90px 0; background-color: transparent; }
+        .ai-card { 
+            background: linear-gradient(to bottom, rgba(87, 46, 12, 0.15), rgba(255, 255, 255, 0.6) 30%, rgba(255, 255, 255, 0.7)); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 12px; 
+            padding: 40px; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.05); 
+            max-width: 800px; 
+            margin: 0 auto; 
+        }
+        .ai-card textarea { 
+            width: 100%; height: 120px; padding: 15px; 
+            background-color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.6); 
+            border-radius: 8px; font-size: 16px; resize: vertical; 
+            margin-bottom: 15px; font-family: var(--font-main); 
+            font-weight: 400;
+            transition: all 0.3s ease;
+        }
+        .ai-card textarea:focus { outline: none; border-color: var(--primary-graphic-color); box-shadow: 0 0 0 2px rgba(74, 59, 50, 0.2); background-color: rgba(255, 255, 255, 0.9); }
+        .ai-output { 
+            margin-top: 30px; padding: 25px; 
+            background-color: rgba(255, 255, 255, 0.4); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-left: 4px solid var(--primary-graphic-color); 
+            border-top: 1px solid rgba(255, 255, 255, 0.6);
+            border-right: 1px solid rgba(255, 255, 255, 0.6);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 0 8px 8px 0; font-size: 16px; display: none; 
+        }
+        .ai-output h1, .ai-output h2, .ai-output h3, .ai-output h4 { font-family: var(--font-logo); margin-top: 15px; margin-bottom: 10px; }
+
+        /* --- Catálogo Section --- */
+        .catalog-section { padding: 60px 0; min-height: 60vh; }
+        .catalog-header { text-align: center; margin-bottom: 40px; }
+        .catalog-header h2 { font-family: var(--font-logo); font-size: 36px; color: var(--text-dark-primary); font-weight: 700;}
+        .catalog-header p { margin-top: 10px; }
+        .status-badge { display: inline-block; background-color: rgba(232, 245, 233, 0.8); color: #2e7d32; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-top: 10px; font-family: var(--font-logo); }
+        .status-badge.offline { background-color: rgba(255, 243, 224, 0.8); color: #e65100; }
+        
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+        .product-card { 
+            background: rgba(255, 255, 255, 0.6); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 12px; overflow: hidden; 
+            border: 1px solid rgba(255, 255, 255, 0.6); 
+            transition: transform 0.3s ease, box-shadow 0.3s ease; 
+            display: flex; flex-direction: column; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+        }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        .product-img { width: 100%; height: 220px; object-fit: cover; }
+        .product-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+        .product-title { font-size: 18px; font-weight: 600; font-family: var(--font-logo); margin-bottom: 10px; }
+        .product-desc { font-size: 14px; margin-bottom: 15px; flex-grow: 1; }
+        .product-price { font-size: 20px; font-weight: 700; color: var(--primary-graphic-color); margin-bottom: 15px; font-family: var(--font-logo);}
+        .add-to-cart-btn { width: 100%; padding: 12px; background-color: transparent; color: var(--primary-graphic-color); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 8px; font-family: var(--font-logo); font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .add-to-cart-btn:hover { background-color: var(--primary-graphic-color); color: var(--white); }
+
+        /* --- Carrinho Modal Lateral --- */
+        .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; display: none; opacity: 0; transition: opacity 0.3s ease; }
+        .cart-sidebar { 
+            position: fixed; top: 0; right: -400px; width: 100%; max-width: 400px; height: 100%; 
+            background: rgba(255, 255, 255, 0.75); 
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            z-index: 1000; box-shadow: -5px 0 30px rgba(0,0,0,0.1); 
+            border-left: 1px solid rgba(255, 255, 255, 0.6);
+            display: flex; flex-direction: column; transition: right 0.3s ease; 
+        }
+        .cart-sidebar.open { right: 0; }
+        .cart-overlay.open { display: block; opacity: 1; }
+        .cart-header { padding: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.6); display: flex; justify-content: space-between; align-items: center; }
+        .cart-header h3 { font-family: var(--font-logo); font-size: 20px; }
+        .close-cart { background: none; border: none; font-size: 24px; cursor: pointer; color: #555; }
+        .cart-items { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .cart-empty-msg { text-align: center; color: #888; margin-top: 50px; font-style: italic; }
+        .cart-item { display: flex; gap: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.6); padding-bottom: 15px; }
+        .cart-item-img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; }
+        .cart-item-details { flex-grow: 1; }
+        .cart-item-title { font-weight: 600; font-size: 14px; margin-bottom: 5px; font-family: var(--font-logo); }
+        .cart-item-price { font-size: 14px; color: var(--primary-graphic-color); font-weight: 600; }
+        .cart-item-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+        .qty-control { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.5); border-radius: 8px; padding: 2px 8px; border: 1px solid rgba(255, 255, 255, 0.6); }
+        .qty-btn { background: none; border: none; cursor: pointer; font-size: 16px; color: var(--primary-graphic-color); font-weight: bold; }
+        .remove-item { color: #d9534f; background: none; border: none; cursor: pointer; font-size: 14px; }
+        .cart-footer { padding: 20px; border-top: 1px solid rgba(255, 255, 255, 0.6); background: rgba(255, 255, 255, 0.3); }
+        .cart-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; margin-bottom: 15px; font-family: var(--font-logo); }
+        .checkout-btn { width: 100%; background-color: var(--success-color); color: white; border: 1px solid rgba(255, 255, 255, 0.6); padding: 15px; font-size: 16px; font-family: var(--font-logo); font-weight: 600; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.3s; }
+        .checkout-btn:hover { background-color: #20b858; }
+
+        /* --- Avaliações --- */
+        .reviews { padding: 90px 0; text-align: center; }
+        .section-title { font-size: 36px; color: var(--text-dark-primary); margin-bottom: 10px; font-family: var(--font-logo); font-weight: 700; }
+        .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-top: 30px;}
+        .review-card { 
+            background: rgba(255, 255, 255, 0.6); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 35px; border-radius: 12px; 
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            text-align: left; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+        }
+        .stars { color: #fbbc04; margin-bottom: 15px; }
+        
+        .review-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .reviewer-photo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+        .reviewer-info { display: flex; flex-direction: column; }
+        .reviewer-name { font-weight: 600; font-family: var(--font-logo); color: var(--text-dark-primary); font-size: 15px; }
+        .review-card .stars { margin-bottom: 0; font-size: 13px; margin-top: 3px; }
+        
+        /* --- Contatos --- */
+        .contact { background-color: transparent; padding: 90px 0; border-top: 1px solid rgba(0,0,0,0.05); }
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 50px; }
+        .contact-item { 
+            display: flex; 
+            align-items: flex-start; 
+            gap: 20px; 
+            background: rgba(255, 255, 255, 0.6); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 30px; 
+            border-radius: 12px; 
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .contact-item:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        .contact-icon { font-size: 28px; color: var(--primary-graphic-color); margin-top: 5px; }
+        .contact-info h3 { font-size: 20px; font-family: var(--font-logo); margin-bottom: 8px; font-weight: 600; }
+        
+        footer { 
+            background: rgba(74, 59, 50, 0.85); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--white); 
+            text-align: center; 
+            padding: 25px 0; 
+            font-size: 14px; 
+        }
+        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background-color: #25d366; color: var(--white); border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.6); display: flex; justify-content: center; align-items: center; font-size: 32px; box-shadow: 0 6px 15px rgba(0,0,0,0.2); z-index: 900; transition: 0.3s; text-decoration: none; }
+        .whatsapp-float:hover { transform: scale(1.1); background-color: #20b858; color: var(--white); }
+
+        @media (max-width: 768px) {
+            .header-content { flex-direction: column; height: auto; padding: 15px 0; gap: 15px; }
+            .nav-links { flex-wrap: wrap; justify-content: center; gap: 15px; }
+            .whatsapp-float { width: 55px; height: 55px; font-size: 28px; bottom: 20px; right: 20px; }
+            .carousel-container { height: 380px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container header-content">
+            <div class="logo" onclick="switchPage('home')" title="Página Inicial">
+                <div class="logo-text">
+                    <span class="logo-main">cepel</span>
+                    <span class="logo-sub">arte decore</span>
+                </div>
+            </div>
+
+            <nav class="nav-links">
+                <a onclick="switchPage('home')" id="link-home" class="active">Início</a>
+                <a onclick="switchPage('catalog')" id="link-catalog">Catálogo</a>
+                <a onclick="switchPage('home'); setTimeout(()=>window.location.hash='#avaliacoes', 100);">Avaliações</a>
+                <a onclick="switchPage('home'); setTimeout(()=>window.location.hash='#contato', 100);">Contato</a>
+                
+                <div class="cart-icon-wrapper" onclick="toggleCart()">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-badge" id="cart-badge">0</span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div id="page-home" class="page-view active">
+            
+            <section class="hero-3d-section">
+                <div class="container">
+                    <h1>Móveis de Alto Padrão em Bocaiúva</h1>
+                    <p class="secondary-text">Descubra móveis incríveis que vão durar para a vida inteira. A sua principal loja de móveis em Minas Gerais.</p>
+                    
+                    <div class="carousel-container" id="carousel-container">
+                        <div class="carousel-scene">
+                            <div class="carousel-cylinder" id="carousel-cylinder">
+                                <div style="color: var(--primary-graphic-color); margin-top: 150px; font-family: var(--font-logo); font-weight: 600;">
+                                    <i class="fas fa-spinner fa-spin"></i> A carregar vitrine 3D...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="switchPage('catalog')" class="cta-button">
+                        Ver Catálogo de Produtos
+                    </button>
+                </div>
+            </section>
+
+            <section class="ai-advisor">
+                <div class="container">
+                    <h2 class="section-title" style="text-align: center;">Dicas de Decoração</h2>
+                    <p class="secondary-text" style="text-align: center; margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto;">
+                        Não sabe como mobiliar o seu espaço? Descreva o seu ambiente abaixo para obter recomendações personalizadas com o padrão Cepel Arte Decore.
+                    </p>
+                    <div class="ai-card">
+                        <textarea id="ai-input" class="secondary-text" placeholder="Ex: Eu tenho uma sala de estar pequena em um apartamento com pouco sol. Gostaria de um ambiente mais aconchegante e espaçoso. Quais móveis devo usar?"></textarea>
+                        <button id="ai-submit-btn" class="cta-button" style="width: 100%; text-align: center;">
+                            Gerar Dicas de Decoração
+                        </button>
+                        <div id="ai-output" class="ai-output secondary-text"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="avaliacoes" class="reviews container">
+                <h2 class="section-title">O que nossos clientes dizem</h2>
+                <div class="google-rating">
+                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <span style="font-family: var(--font-logo); font-weight: 600; margin-left: 10px; font-size: 16px;">5,0 (Avaliações no Google)</span>
+                </div>
+
+                <div class="reviews-grid" id="dynamic-reviews-grid">
+                    <div style="text-align: center; width: 100%; grid-column: 1 / -1; color: var(--primary-graphic-color); font-family: var(--font-logo); font-weight: 600;">
+                        <i class="fas fa-spinner fa-spin"></i> Sincronizando avaliações do Google...
+                    </div>
+                </div>
+            </section>
+
+            <section id="contato" class="contact">
+                <div class="container">
+                    <h2 class="section-title" style="text-align: center;">Visite Nossa Loja</h2>
+                    <div class="contact-grid">
+                        <div class="contact-item">
+                            <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <div class="contact-info">
+                                <h3>Endereço</h3>
+                                <a href="https://www.google.com/maps/search/?api=1&query=R.+José+Brandão+Filho,+416+-+Centro,+Bocaiúva+-+MG,+39390-000" class="secondary-text" target="_blank">
+                                    R. José Brandão Filho, 416 - Centro<br>Bocaiúva - MG, 39390-000
+                                </a>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
+                            <div class="contact-info">
+                                <h3>Telefone</h3>
+                                <a href="tel:+553832511525" class="secondary-text">(38) 3251-1525</a>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon"><i class="fas fa-clock"></i></div>
+                            <div class="contact-info">
+                                <h3>Horário de Funcionamento</h3>
+                                <p class="secondary-text">Segunda a Sexta: 8:00 - 18:00<br>Sábado: 8:00 - 13:00</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon"><i class="fab fa-instagram"></i></div>
+                            <div class="contact-info">
+                                <h3>Instagram</h3>
+                                <a href="https://www.instagram.com/cepelartedecore" class="secondary-text" target="_blank">@cepelartedecore</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="page-catalog" class="page-view">
+            <section class="catalog-section container">
+                <div class="catalog-header">
+                    <h2>Nosso Catálogo</h2>
+                    <p class="secondary-text">Adicione os itens ao carrinho e conclua seu atendimento pelo WhatsApp.</p>
+                    <div id="sync-status" class="status-badge"><i class="fas fa-sync fa-spin"></i> Sincronizando com WhatsApp...</div>
+                </div>
+                
+                <div class="product-grid" id="product-grid">
+                    </div>
+            </section>
+        </div>
+    </main>
+
+    <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Seu Carrinho</h3>
+            <button class="close-cart" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items" id="cart-items-container">
+            <p class="cart-empty-msg secondary-text">Seu carrinho está vazio.</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total estimado:</span>
+                <span id="cart-total-price">R$ 0,00</span>
+            </div>
+            <button class="checkout-btn" onclick="checkoutWhatsApp()">
+                Continuar no WhatsApp <i class="fab fa-whatsapp" style="font-size: 20px;"></i>
+            </button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p style="font-family: var(--font-logo); font-weight: 400;">© 2026 Cepel Arte Decore. Todos os direitos reservados.</p>
+            <p style="font-size: 12px; margin-top: 5px; opacity: 0.7; font-family: var(--font-logo);">KrM Corp</p>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/553832511000" class="whatsapp-float" target="_blank" title="Fale conosco pelo WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script>
+        // --- NAVEGAÇÃO DE PÁGINAS ---
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-view').forEach(el => el.classList.remove('active'));
+            document.getElementById('link-home').classList.remove('active');
+            document.getElementById('link-catalog').classList.remove('active');
+            document.getElementById('page-' + pageId).classList.add('active');
+            document.getElementById('link-' + pageId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // --- SISTEMA DE INTEGRAÇÃO DE CATÁLOGO (FRONT-END) ---
+        const BACKEND_URL = "https://seu-servidor-nodejs.herokuapp.com/api/catalog";
+        
+        let productsCatalog = [];
+        let cart = [];
+
+        const formatMoney = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        async function fetchCatalogFromWhatsApp() {
+            const statusBadge = document.getElementById('sync-status');
+            
+            try {
+                const response = await fetch(BACKEND_URL);
+                if(!response.ok) throw new Error("Servidor não configurado");
+                
+                productsCatalog = await response.json();
+                if(statusBadge) {
+                    statusBadge.className = 'status-badge';
+                    statusBadge.innerHTML = '<i class="fas fa-check-circle"></i> Sincronizado com WhatsApp';
+                }
+
+            } catch (error) {
+                console.warn("Backend não detectado. Carregando catálogo de demonstração offline.");
+                if(statusBadge) {
+                    statusBadge.className = 'status-badge offline';
+                    statusBadge.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Modo Demo (Backend Desconectado)';
+                }
+                
+                productsCatalog = [
+                    { id: "DEMO_1", name: "Sofá Retrátil Florença", description: "Sincronização pendente. Este é um item de teste.", price: 3200.00, image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=400&q=80" },
+                    { id: "DEMO_2", name: "Mesa de Jantar Imperial", description: "Mesa de jantar com base em madeira maciça.", price: 4500.00, image: "https://images.unsplash.com/photo-1615874959474-d609969a20ed?auto=format&fit=crop&w=400&q=80" },
+                    { id: "DEMO_3", name: "Poltrona Decorativa", description: "Design moderno e arrojado.", price: 1150.00, image: "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&w=400&q=80" },
+                    { id: "DEMO_4", name: "Painel TV Madeira", description: "Até 75 polegadas.", price: 1890.00, image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80" },
+                    { id: "DEMO_5", name: "Cama Box", description: "Tamanho King.", price: 2100.00, image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=400&q=80" }
+                ];
+            }
+            renderCatalog();
+            init3DCarousel();
+        }
+
+        // --- SISTEMA DE CARROSSEL 3D VANILLA JS ---
+        let currentRotation = 0;
+        let targetRotation = 0;
+        let startX = 0;
+        let isDragging = false;
+        let rafId = null;
+
+        function renderCarouselFrame() {
+            if (!isDragging) {
+                targetRotation -= 0.15; 
+            }
+            
+            currentRotation += (targetRotation - currentRotation) * 0.1;
+            
+            const cylinder = document.getElementById('carousel-cylinder');
+            if (cylinder) {
+                cylinder.style.transform = `rotateY(${currentRotation}deg)`;
+            }
+            rafId = requestAnimationFrame(renderCarouselFrame);
+        }
+
+        function init3DDrag() {
+            const container = document.getElementById('carousel-container');
+            if (!container) return;
+
+            container.onpointerdown = (e) => {
+                isDragging = true;
+                startX = e.pageX;
+            };
+
+            window.onpointermove = (e) => {
+                if (!isDragging) return;
+                const deltaX = e.pageX - startX;
+                targetRotation += deltaX * 0.25; 
+                startX = e.pageX;
+            };
+
+            window.onpointerup = () => {
+                isDragging = false;
+            };
+
+            if (!rafId) renderCarouselFrame();
+        }
+
+        function init3DCarousel() {
+            const cylinder = document.getElementById('carousel-cylinder');
+            if(!cylinder) return;
+            
+            const cards = productsCatalog.slice(0, 12); 
+            const faceCount = cards.length;
+            if(faceCount === 0) return;
+
+            cylinder.innerHTML = ''; 
+
+            const isMobile = window.innerWidth <= 640;
+            const cardWidth = isMobile ? 200 : 250;
+            const cardHeight = isMobile ? 200 : 250;
+            
+            cylinder.style.width = `${cardWidth}px`;
+            cylinder.style.height = `${cardHeight}px`;
+
+            const radius = Math.max((cardWidth / 2) / Math.tan(Math.PI / faceCount) + (isMobile? 20 : 40), isMobile ? 180 : 250);
+
+            cards.forEach((product, i) => {
+                const angle = i * (360 / faceCount);
+                const card = document.createElement('div');
+                card.className = 'carousel-card';
+                card.style.width = `${cardWidth}px`;
+                card.style.height = `${cardHeight}px`;
+                card.style.transform = `rotateY(${angle}deg) translateZ(${radius}px)`;
+                
+                card.innerHTML = `<img src="${product.image}" alt="${product.name}" draggable="false">`;
+                cylinder.appendChild(card);
+            });
+            
+            init3DDrag();
+        }
+
+        // --- SISTEMA CATÁLOGO ---
+        function renderCatalog() {
+            const grid = document.getElementById('product-grid');
+            if(!grid) return;
+            grid.innerHTML = '';
+            productsCatalog.forEach(product => {
+                grid.innerHTML += `
+                    <div class="product-card">
+                        <img src="${product.image}" alt="${product.name}" class="product-img">
+                        <div class="product-info">
+                            <h3 class="product-title">${product.name}</h3>
+                            <p class="product-desc secondary-text">${product.description}</p>
+                            <div class="product-price">${formatMoney(product.price)}</div>
+                            <button class="add-to-cart-btn" onclick="addToCart('${product.id}')">
+                                <i class="fas fa-cart-plus"></i> Adicionar
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- FUNÇÕES DO CARRINHO ---
+        function addToCart(productId) {
+            const product = productsCatalog.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.product.id === productId);
+            if (existingItem) existingItem.quantity += 1;
+            else cart.push({ product: product, quantity: 1 });
+            updateCartUI();
+            
+            const sidebar = document.getElementById('cart-sidebar');
+            if(!sidebar.classList.contains('open')) toggleCart();
+        }
+
+        function changeQty(productId, delta) {
+            const item = cart.find(i => i.product.id === productId);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) cart = cart.filter(i => i.product.id !== productId);
+                updateCartUI();
+            }
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            const badge = document.getElementById('cart-badge');
+            const totalEl = document.getElementById('cart-total-price');
+            let totalItems = 0; let totalPrice = 0;
+
+            if (cart.length === 0) {
+                container.innerHTML = '<p class="cart-empty-msg secondary-text">Seu carrinho está vazio.</p>';
+            } else {
+                container.innerHTML = '';
+                cart.forEach(item => {
+                    totalItems += item.quantity;
+                    totalPrice += (item.product.price * item.quantity);
+                    container.innerHTML += `
+                        <div class="cart-item">
+                            <img src="${item.product.image}" alt="${item.product.name}" class="cart-item-img">
+                            <div class="cart-item-details">
+                                <div class="cart-item-title">${item.product.name}</div>
+                                <div class="cart-item-price">${formatMoney(item.product.price)}</div>
+                                <div class="cart-item-actions">
+                                    <div class="qty-control">
+                                        <button class="qty-btn" onclick="changeQty('${item.product.id}', -1)">-</button>
+                                        <span style="font-family: var(--font-logo); font-weight: 600;">${item.quantity}</span>
+                                        <button class="qty-btn" onclick="changeQty('${item.product.id}', 1)">+</button>
+                                    </div>
+                                    <button class="remove-item" onclick="changeQty('${item.product.id}', -999)"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            badge.innerText = totalItems;
+            totalEl.innerText = formatMoney(totalPrice);
+        }
+
+        function toggleCart() {
+            document.getElementById('cart-sidebar').classList.toggle('open');
+            document.getElementById('cart-overlay').classList.toggle('open');
+        }
+
+        function checkoutWhatsApp() {
+            if (cart.length === 0) return alert("Adicione produtos ao carrinho antes de continuar!");
+            let message = "Olá Cepel Arte Decore! 👋\nTenho interesse nos seguintes itens do catálogo:\n\n";
+            let total = 0;
+            cart.forEach(item => {
+                const subtotal = item.product.price * item.quantity;
+                total += subtotal;
+                message += `▪ *${item.quantity}x* ${item.product.name} - ${formatMoney(subtotal)}\n`;
+            });
+            message += `\n*Total Estimado: ${formatMoney(total)}*\n\nComo podemos prosseguir com a compra?`;
+            const phone = "553832511000";
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        window.onload = () => {
+            fetchCatalogFromWhatsApp();
+            loadGoogleReviews();
+        };
+
+        // --- INTEGRAÇÃO GOOGLE AVALIAÇÕES ---
+        async function loadGoogleReviews() {
+            const reviewsGrid = document.getElementById('dynamic-reviews-grid');
+            try {
+                const googleApiResponse = [
+                    { author_name: "Camila Fernandes", profile_photo_url: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80", rating: 5, text: "Resumindo: Móveis de alto padrão e que irão durar para a vida toda." },
+                    { author_name: "Letícia Costa", profile_photo_url: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80", rating: 5, text: "Encantada com a loja!" },
+                    { author_name: "Marcos Paulo", profile_photo_url: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=150&q=80", rating: 5, text: "Ótimo atendimento, lindos móveis!" }
+                ];
+
+                const fiveStarReviews = googleApiResponse.filter(review => review.rating === 5);
+                reviewsGrid.innerHTML = '';
+                
+                fiveStarReviews.forEach(review => {
+                    const avatarUrl = review.profile_photo_url ? review.profile_photo_url : `https://ui-avatars.com/api/?name=${encodeURIComponent(review.author_name)}&background=4A3B32&color=fff`;
+                    reviewsGrid.innerHTML += `
+                        <div class="review-card">
+                            <div class="review-header">
+                                <img src="${avatarUrl}" alt="Foto de ${review.author_name}" class="reviewer-photo">
+                                <div class="reviewer-info">
+                                    <span class="reviewer-name">${review.author_name}</span>
+                                    <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                                </div>
+                            </div>
+                            <p class="review-text secondary-text">"${review.text}"</p>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                if(reviewsGrid) reviewsGrid.innerHTML = '<p style="color: red; grid-column: 1/-1; text-align: center;">Não foi possível sincronizar as avaliações no momento.</p>';
+            }
+        }
+
+        // --- GEMINI AI ---
+        const apiKey = "";
+        const aiSubmitBtn = document.getElementById('ai-submit-btn');
+        
+        aiSubmitBtn.addEventListener('click', async () => {
+            const userDesc = document.getElementById('ai-input').value.trim();
+            if (!userDesc) return;
+            
+            const aiOutput = document.getElementById('ai-output');
+            aiSubmitBtn.disabled = true; 
+            aiSubmitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analisando ambiente...';
+            aiOutput.style.display = 'block'; 
+            aiOutput.innerHTML = '<p style="color: #555555; font-family: var(--font-logo); font-weight: 600;"><i class="fas fa-magic"></i> Projetando ideias e buscando no catálogo...</p>';
+            
+            const catalogData = productsCatalog.map(p => `ID: ${p.id} | Nome: ${p.name} | Descrição: ${p.description}`).join('\n');
+
+            const decoratorSystemPrompt = `
+Você é um consultor e designer de interiores de alto padrão da loja 'Cepel Arte Decore'. Seu objetivo é focar na venda e convencer o cliente a comprar nossos produtos.
+
+Regras absolutas:
+1. Dê 2 dicas de decoração extremamente precisas e sucintas, justificando por que um produto da loja é a escolha ideal.
+2. Nunca faça o cliente ter que digitar novamente nesta caixa de texto perguntando tamanhos ou cores. Sempre indique o atendimento no whatsapp com especialista.
+3. Sempre finalize o seu texto com uma pergunta persuasiva (e não uma afirmação), guiando o cliente para iniciar a conversa no WhatsApp. O vendedor quem guia a conversa.
+4. Você DEVE analisar o 'Catálogo Atual' abaixo e escolher ESTRITAMENTE 1 (um) produto que combine com a descrição do cliente.
+
+Catálogo Atual:
+${catalogData}
+
+Você deve responder OBRIGATORIAMENTE no formato JSON abaixo:
+{
+  "texto_dica": "Seu texto persuasivo aqui.",
+  "produto_recomendado_id": "ID_DO_PRODUTO"
+}`;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        contents: [{ parts: [{ text: userDesc }] }], 
+                        systemInstruction: { parts: [{ text: decoratorSystemPrompt }] },
+                        generationConfig: { responseMimeType: "application/json" }
+                    })
+                });
+                
+                const data = await response.json();
+                const aiResponse = JSON.parse(data.candidates[0].content.parts[0].text);
+                let htmlOutput = marked.parse(aiResponse.texto_dica);
+                
+                const recProduct = productsCatalog.find(p => String(p.id) === String(aiResponse.produto_recomendado_id));
+                
+                if (recProduct) {
+                    htmlOutput += `
+                    <div style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.6); padding-top: 25px; text-align: center;">
+                        <h4 style="color: var(--primary-graphic-color); font-family: var(--font-logo); margin-bottom: 15px; font-size: 18px;">
+                            <i class="fas fa-star"></i> Nossa Sugestão para o seu Espaço
+                        </h4>
+                        <div class="product-card" style="max-width: 320px; margin: 0 auto; box-shadow: 0 8px 32px rgba(0,0,0,0.05); text-align: left;">
+                            <img src="${recProduct.image}" alt="${recProduct.name}" class="product-img">
+                            <div class="product-info" style="padding: 20px;">
+                                <h3 class="product-title" style="font-size: 16px;">${recProduct.name}</h3>
+                                <div class="product-price" style="font-size: 18px;">${formatMoney(recProduct.price)}</div>
+                                <button class="add-to-cart-btn" onclick="addToCart('${recProduct.id}')" style="padding: 10px; font-size: 14px;">
+                                    <i class="fas fa-cart-plus"></i> Adicionar ao Carrinho
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                }
+
+                aiOutput.innerHTML = htmlOutput;
+                
+            } catch (e) {
+                console.error(e);
+                aiOutput.innerHTML = `<p style="color: #d9534f; font-weight: bold; font-family: var(--font-logo);">Ops! Ocorreu um erro de conexão. Tente novamente.</p>`;
+            } finally {
+                aiSubmitBtn.disabled = false; 
+                aiSubmitBtn.innerHTML = 'Gerar Dicas de Decoração';
+            }
+        });
+    </script>
+</body>
+</html>
