@@ -315,7 +315,10 @@
         
         /* --- Contatos --- */
         .contact { background-color: transparent; padding: 90px 0; border-top: 1px solid rgba(0,0,0,0.05); }
-        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 50px; }
+        .contact-grid { display: grid; grid-template-columns: 1fr; gap: 30px; margin-top: 50px; }
+        @media (min-width: 768px) {
+            .contact-grid { grid-template-columns: repeat(2, 1fr); }
+        }
         .contact-item { 
             display: flex; 
             align-items: flex-start; 
