@@ -216,12 +216,45 @@
 
         /* --- Catálogo Section --- */
         .catalog-section { padding: 60px 0; min-height: 60vh; }
-        .catalog-header { text-align: center; margin-bottom: 40px; }
+        .catalog-header { text-align: center; margin-bottom: 30px; }
         .catalog-header h2 { font-family: var(--font-logo); font-size: 36px; color: var(--text-dark-primary); font-weight: 700;}
         .catalog-header p { margin-top: 10px; }
         .status-badge { display: inline-block; background-color: rgba(232, 245, 233, 0.8); color: #2e7d32; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-top: 10px; font-family: var(--font-logo); }
         .status-badge.offline { background-color: rgba(255, 243, 224, 0.8); color: #e65100; }
         
+        /* Menu de Categorias */
+        .catalog-categories {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 10px 24px 20px 24px;
+            margin: 0 -24px 30px -24px;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+        }
+        .catalog-categories::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+        .category-btn {
+            white-space: nowrap;
+            padding: 10px 22px;
+            border-radius: 50px;
+            border: 1px solid rgba(74, 59, 50, 0.3);
+            background: transparent;
+            color: var(--primary-graphic-color);
+            font-family: var(--font-main);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .category-btn:hover { border-color: var(--primary-graphic-color); }
+        .category-btn.active {
+            background-color: var(--primary-graphic-color);
+            color: var(--white);
+            border-color: var(--primary-graphic-color);
+            box-shadow: 0 4px 12px rgba(74, 59, 50, 0.2);
+        }
+
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
         .product-card { 
             background: rgba(255, 255, 255, 0.6); 
@@ -229,10 +262,11 @@
             -webkit-backdrop-filter: blur(16px);
             border-radius: 12px; overflow: hidden; 
             border: 1px solid rgba(255, 255, 255, 0.6); 
-            transition: transform 0.3s ease, box-shadow 0.3s ease; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.4s ease; 
             display: flex; flex-direction: column; 
             box-shadow: 0 8px 32px rgba(0,0,0,0.05);
         }
+        .product-card.hidden { display: none; }
         .product-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
         .product-img { width: 100%; height: 220px; object-fit: cover; }
         .product-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
@@ -484,10 +518,40 @@
         <div id="page-catalog" class="page-view">
             <section class="catalog-section">
                 <div class="container">
-                    <div class="catalog-header" style="text-align: center; margin-bottom: 40px;">
+                    <div class="catalog-header">
                         <h2 class="section-title">Nosso Catálogo</h2>
                         <p class="secondary-text" style="max-width: 700px; margin-left: auto; margin-right: auto;">Adicione os itens ao carrinho e conclua seu atendimento pelo WhatsApp.</p>
                         <div id="sync-status" class="status-badge"><i class="fas fa-sync fa-spin"></i> Sincronizando com WhatsApp...</div>
+                    </div>
+
+                    <div class="catalog-categories" id="catalog-categories">
+                        <button class="category-btn active" onclick="filterByCategory('Todos', this)">Todos</button>
+                        <button class="category-btn" onclick="filterByCategory('Almofadas', this)">Almofadas</button>
+                        <button class="category-btn" onclick="filterByCategory('Aparadores', this)">Aparadores</button>
+                        <button class="category-btn" onclick="filterByCategory('Banquetas e Bancos', this)">Banquetas e Bancos</button>
+                        <button class="category-btn" onclick="filterByCategory('Buffet', this)">Buffet</button>
+                        <button class="category-btn" onclick="filterByCategory('Cadeiras e Poltronas', this)">Cadeiras e Poltronas</button>
+                        <button class="category-btn" onclick="filterByCategory('Cama, Mesa e Banho (Têxteis)', this)">Cama, Mesa e Banho (Têxteis)</button>
+                        <button class="category-btn" onclick="filterByCategory('Camas, Cabeceiras e Colchões', this)">Camas, Cabeceiras e Colchões</button>
+                        <button class="category-btn" onclick="filterByCategory('Cortinas e Persianas', this)">Cortinas e Persianas</button>
+                        <button class="category-btn" onclick="filterByCategory('Espelhos', this)">Espelhos</button>
+                        <button class="category-btn" onclick="filterByCategory('Guarda Roupa', this)">Guarda Roupa</button>
+                        <button class="category-btn" onclick="filterByCategory('Iluminação', this)">Iluminação</button>
+                        <button class="category-btn" onclick="filterByCategory('Mesas de Centro, Laterais e Escritório', this)">Mesas de Centro, Laterais e Escritório</button>
+                        <button class="category-btn" onclick="filterByCategory('Mesas de jantar', this)">Mesas de jantar</button>
+                        <button class="category-btn" onclick="filterByCategory('Mesas para área externa', this)">Mesas para área externa</button>
+                        <button class="category-btn" onclick="filterByCategory('Móveis de Escritório / Armazenamento', this)">Móveis de Escritório / Armazenamento</button>
+                        <button class="category-btn" onclick="filterByCategory('Objetos Decorativos e Porta Retratos', this)">Objetos Decorativos e Porta Retratos</button>
+                        <button class="category-btn" onclick="filterByCategory('Painéis', this)">Painéis</button>
+                        <button class="category-btn" onclick="filterByCategory('Poltronas', this)">Poltronas</button>
+                        <button class="category-btn" onclick="filterByCategory('Puffs', this)">Puffs</button>
+                        <button class="category-btn" onclick="filterByCategory('Quadros e Telas', this)">Quadros e Telas</button>
+                        <button class="category-btn" onclick="filterByCategory('Racks e Homes', this)">Racks e Homes</button>
+                        <button class="category-btn" onclick="filterByCategory('Sofás', this)">Sofás</button>
+                        <button class="category-btn" onclick="filterByCategory('Tapetes', this)">Tapetes</button>
+                        <button class="category-btn" onclick="filterByCategory('Utilidades Domésticas / Mesa Posta', this)">Utilidades Domésticas / Mesa Posta</button>
+                        <button class="category-btn" onclick="filterByCategory('Vasos e Plantas', this)">Vasos e Plantas</button>
+                        <button class="category-btn" onclick="filterByCategory('Diversos (Não classificados)', this)">Diversos (Não classificados)</button>
                     </div>
                     
                     <div class="product-grid" id="product-grid">
@@ -700,7 +764,7 @@
             grid.innerHTML = '';
             productsCatalog.forEach(product => {
                 grid.innerHTML += `
-                    <div class="product-card">
+                    <div class="product-card" data-category="${product.category || 'Diversos (Não classificados)'}">
                         <img src="${product.image}" alt="${product.name}" class="product-img">
                         <div class="product-info">
                             <h3 class="product-title">${product.name}</h3>
@@ -712,6 +776,23 @@
                         </div>
                     </div>
                 `;
+            });
+        }
+
+        function filterByCategory(category, btn) {
+            // Atualiza classe ativa nos botões
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Filtra os cards
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach(card => {
+                const productCategory = card.getAttribute('data-category');
+                if (category === 'Todos' || productCategory === category) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
             });
         }
 
