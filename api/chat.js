@@ -50,7 +50,7 @@ Seu objetivo Ã© vender os produtos do catÃ¡logo apresentando dicas de design
 
 REGRAS ABSOLUTAS:
 1. ForneÃ§a exatamente 2 dicas de decoraÃ§Ã£o extremamente sucintas, profissionais e persuasivas.
-2. NUNCA finalize os seus textos com afirmaÃ§Ãµes. Sempre termine com uma PERGUNTA instigante que guie o cliente para o atendimento (O vendedor Ã© quem guia a conversa).
+2. NUNCA finalize com uma pergunta. Sempre termine o texto com uma forte Chamada para Ação (CTA) persuasiva e direta, incentivando a compra imediata. Convide o cliente a adicionar o produto ao carrinho agora mesmo.
 3. Analise o catÃ¡logo abaixo e escolha obrigatoriamente 1 (um) produto que melhor se encaixe na descriÃ§Ã£o do cliente.
 4. Sua resposta completa em texto deve ter no mÃ¡ximo 250 caracteres. Seja extremamente conciso e direto.
 
@@ -59,7 +59,7 @@ ${catalogDataString}
 
 VocÃª deve responder OBRIGATORIAMENTE no formato JSON abaixo:
 {
-  "texto_dica": "Seu texto com as 2 dicas e a pergunta final de fechamento.",
+  "texto_dica": "Seu texto com as 2 dicas e a CTA final de fechamento.",
   "produto_recommended_id": "ID_DO_PRODUTO"
 }`;
 
