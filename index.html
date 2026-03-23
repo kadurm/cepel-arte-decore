@@ -521,7 +521,6 @@
                     <div class="catalog-header">
                         <h2 class="section-title">Nosso Catálogo</h2>
                         <p class="secondary-text" style="max-width: 700px; margin-left: auto; margin-right: auto;">Adicione os itens ao carrinho e conclua seu atendimento pelo WhatsApp.</p>
-                        <div id="sync-status" class="status-badge"><i class="fas fa-sync fa-spin"></i> Sincronizando com WhatsApp...</div>
                     </div>
 
                     <div class="catalog-categories" id="catalog-categories">
@@ -649,8 +648,6 @@
         };
 
         async function loadCatalog() {
-            const statusBadge = document.getElementById('sync-status');
-            
             try {
                 const response = await fetch('./catalog.json');
                 if(!response.ok) throw new Error("Catálogo não encontrado");
@@ -658,21 +655,12 @@
                 siteCatalog = await response.json();
                 window.siteCatalog = siteCatalog; // Mantendo referência global conforme solicitado
 
-                if(statusBadge) {
-                    statusBadge.className = 'status-badge';
-                    statusBadge.innerHTML = '<i class="fas fa-check-circle"></i> Sincronizado com WhatsApp';
-                }
-
                 // Renderização inicial
                 renderCatalog(siteCatalog);
                 init3DCarousel();
 
             } catch (error) {
                 console.error("Erro ao carregar o catálogo JSON:", error);
-                if(statusBadge) {
-                    statusBadge.className = 'status-badge offline';
-                    statusBadge.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Erro ao carregar catálogo';
-                }
                 
                 // Fallback para modo demonstração se o JSON falhar
                 siteCatalog = [
