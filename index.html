@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cepel Arte Decore | Loja de Móveis em Bocaiúva - MG</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Poppins:wght@400;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    
+
     <style>
         @font-face {
             font-family: 'Sklow';
@@ -20,71 +23,146 @@
 
         /* Variáveis de Tema */
         :root {
-            --primary-graphic-color: #4A3B32; 
-            --text-dark-primary: #000000;      
-            --bg-color: transparent;              
+            --primary-graphic-color: #4A3B32;
+            --text-dark-primary: #000000;
+            --bg-color: transparent;
             --white: #FFFFFF;
             --light-gray: #EEEEEE;
             --font-logo: 'Sklow', sans-serif;
-            --font-main: 'Montserrat', sans-serif; 
+            --font-main: 'Montserrat', sans-serif;
             --success-color: #25d366;
         }
 
         /* Reset Básico */
-        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-        
-        body { 
-            background: radial-gradient(ellipse at bottom, #ffffff, #ffffff, #572e0c); 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: radial-gradient(ellipse at bottom, #ffffff, #ffffff, #572e0c);
             background-attachment: fixed;
-            color: var(--text-dark-primary); 
-            font-family: var(--font-main); 
-            line-height: 1.6; 
+            color: var(--text-dark-primary);
+            font-family: var(--font-main);
+            line-height: 1.6;
             overflow-x: hidden;
         }
-        
-        a { text-decoration: none; color: inherit; }
-        .container { width: 100%; max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
 
         /* --- Cabeçalho Efeito Vidro --- */
-        header { 
-            background-color: rgba(255, 255, 255, 0.55); 
-            backdrop-filter: blur(16px); 
-            -webkit-backdrop-filter: blur(16px); 
+        header {
+            background-color: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 4px 30px rgba(0,0,0,0.05); 
-            position: sticky; 
-            top: 0; 
-            z-index: 100; 
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .header-content { display: flex; justify-content: space-between; align-items: center; height: 90px; }
-        
-        .logo { display: flex; align-items: center; cursor: pointer; }
-        .logo-img { max-height: 78px; width: auto; object-fit: contain; transition: transform 0.3s ease; }
-        .logo-img:hover { transform: scale(1.02); }
-        
-        .nav-links { display: flex; gap: 25px; align-items: center; }
-        .nav-links a { 
-            font-family: var(--font-logo); 
-            font-weight: 600; 
-            font-size: 15px; 
-            transition: color 0.3s ease; 
-            cursor: pointer; 
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 90px;
         }
-        .nav-links a:hover, .nav-links a.active { color: var(--primary-graphic-color); }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .logo-img {
+            max-height: 78px;
+            width: auto;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-img:hover {
+            transform: scale(1.02);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            font-family: var(--font-logo);
+            font-weight: 600;
+            font-size: 15px;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary-graphic-color);
+        }
 
         /* Carrinho no Header */
-        .cart-icon-wrapper { position: relative; cursor: pointer; font-size: 20px; color: var(--primary-graphic-color); }
+        .cart-icon-wrapper {
+            position: relative;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--primary-graphic-color);
+        }
+
         .cart-badge {
-            position: absolute; top: -8px; right: -10px; background-color: #d9534f; color: white;
-            font-size: 11px; font-weight: bold; width: 18px; height: 18px; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background-color: #d9534f;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             font-family: var(--font-logo);
         }
 
         /* Ocultar/Exibir Seções */
-        .page-view { display: none; }
-        .page-view.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .page-view {
+            display: none;
+        }
+
+        .page-view.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
         /* --- Textos Secundários --- */
         .secondary-text {
@@ -95,24 +173,31 @@
         }
 
         /* --- Hero Section 3D --- */
-        .hero-3d-section { 
-            padding: 60px 20px 20px 20px; 
-            text-align: center; 
-            overflow: hidden; 
+        .hero-3d-section {
+            padding: 60px 20px 20px 20px;
+            text-align: center;
+            overflow: hidden;
         }
-        .hero-3d-section h1 { 
-            font-size: 42px; 
-            margin-bottom: 15px; 
-            line-height: 1.2; 
-            font-family: var(--font-logo); 
-            font-weight: 700; 
-            color: var(--text-dark-primary); 
+
+        .hero-3d-section h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+            line-height: 1.2;
+            font-family: var(--font-logo);
+            font-weight: 700;
+            color: var(--text-dark-primary);
         }
-        @media (min-width: 768px) { .hero-3d-section h1 { font-size: 52px; } }
-        .hero-3d-section p { 
-            font-size: 18px; 
-            max-width: 700px; 
-            margin: 0 auto 10px auto; 
+
+        @media (min-width: 768px) {
+            .hero-3d-section h1 {
+                font-size: 52px;
+            }
+        }
+
+        .hero-3d-section p {
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto 10px auto;
         }
 
         /* --- Carrossel 3D --- */
@@ -127,7 +212,11 @@
             cursor: grab;
             user-select: none;
         }
-        .carousel-container:active { cursor: grabbing; }
+
+        .carousel-container:active {
+            cursor: grabbing;
+        }
+
         .carousel-scene {
             perspective: 1200px;
             width: 100%;
@@ -136,24 +225,27 @@
             align-items: center;
             justify-content: center;
         }
+
         .carousel-cylinder {
             position: relative;
             transform-style: preserve-3d;
         }
+
         .carousel-card {
             position: absolute;
             top: 0;
             left: 0;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            -webkit-box-reflect: below 15px linear-gradient(transparent, transparent, rgba(0,0,0,0.3));
-            background: rgba(255,255,255,0.6);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            -webkit-box-reflect: below 15px linear-gradient(transparent, transparent, rgba(0, 0, 0, 0.3));
+            background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.6);
             transition: opacity 0.3s;
         }
+
         .carousel-card img {
             width: 100%;
             height: 100%;
@@ -161,67 +253,136 @@
             pointer-events: none;
         }
 
-        .cta-button { 
-            background-color: var(--primary-graphic-color); 
-            color: var(--white); 
-            padding: 18px 40px; 
-            font-size: 18px; 
+        .cta-button {
+            background-color: var(--primary-graphic-color);
+            color: var(--white);
+            padding: 18px 40px;
+            font-size: 18px;
             font-family: var(--font-logo);
-            font-weight: 600; 
-            border-radius: 4px; 
-            display: inline-block; 
-            transition: all 0.3s ease; 
-            box-shadow: 0 4px 10px rgba(74, 59, 50, 0.3); 
-            cursor: pointer; 
-            border: 1px solid rgba(255, 255, 255, 0.6); 
+            font-weight: 600;
+            border-radius: 4px;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(74, 59, 50, 0.3);
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.6);
         }
-        .cta-button:hover { background-color: #3B2E28; transform: translateY(-2px); }
-        .cta-button:disabled { background-color: #cccccc; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .cta-button:hover {
+            background-color: #3B2E28;
+            transform: translateY(-2px);
+        }
+
+        .cta-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
 
         /* --- Consultoria IA Section --- */
-        .ai-advisor { padding: 90px 0; background-color: transparent; }
-        .ai-card { 
-            background: linear-gradient(to bottom, rgba(87, 46, 12, 0.15), rgba(255, 255, 255, 0.6) 30%, rgba(255, 255, 255, 0.7)); 
+        .ai-advisor {
+            padding: 90px 0;
+            background-color: transparent;
+        }
+
+        .ai-card {
+            background: linear-gradient(to bottom, rgba(87, 46, 12, 0.15), rgba(255, 255, 255, 0.6) 30%, rgba(255, 255, 255, 0.7));
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.6);
-            border-radius: 12px; 
-            padding: 40px; 
-            box-shadow: 0 8px 32px rgba(0,0,0,0.05); 
-            max-width: 800px; 
-            margin: 0 auto; 
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+            max-width: 800px;
+            margin: 0 auto;
         }
-        .ai-card textarea { 
-            width: 100%; height: 120px; padding: 15px; 
+
+        .ai-card textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
             background-color: rgba(255, 255, 255, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.6); 
-            border-radius: 8px; font-size: 16px; resize: vertical; 
-            margin-bottom: 15px; font-family: var(--font-main); 
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            margin-bottom: 15px;
+            font-family: var(--font-main);
             font-weight: 400;
             transition: all 0.3s ease;
         }
-        .ai-card textarea:focus { outline: none; border-color: var(--primary-graphic-color); box-shadow: 0 0 0 2px rgba(74, 59, 50, 0.2); background-color: rgba(255, 255, 255, 0.9); }
-        .ai-output { 
-            margin-top: 30px; padding: 25px; 
-            background-color: rgba(255, 255, 255, 0.4); 
+
+        .ai-card textarea:focus {
+            outline: none;
+            border-color: var(--primary-graphic-color);
+            box-shadow: 0 0 0 2px rgba(74, 59, 50, 0.2);
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        .ai-output {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border-left: 4px solid var(--primary-graphic-color); 
+            border-left: 4px solid var(--primary-graphic-color);
             border-top: 1px solid rgba(255, 255, 255, 0.6);
             border-right: 1px solid rgba(255, 255, 255, 0.6);
             border-bottom: 1px solid rgba(255, 255, 255, 0.6);
-            border-radius: 0 8px 8px 0; font-size: 16px; display: none; 
+            border-radius: 0 8px 8px 0;
+            font-size: 16px;
+            display: none;
         }
-        .ai-output h1, .ai-output h2, .ai-output h3, .ai-output h4 { font-family: var(--font-logo); margin-top: 15px; margin-bottom: 10px; }
+
+        .ai-output h1,
+        .ai-output h2,
+        .ai-output h3,
+        .ai-output h4 {
+            font-family: var(--font-logo);
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
 
         /* --- Catálogo Section --- */
-        .catalog-section { padding: 60px 0; min-height: 60vh; }
-        .catalog-header { text-align: center; margin-bottom: 30px; }
-        .catalog-header h2 { font-family: var(--font-logo); font-size: 36px; color: var(--text-dark-primary); font-weight: 700;}
-        .catalog-header p { margin-top: 10px; }
-        .status-badge { display: inline-block; background-color: rgba(232, 245, 233, 0.8); color: #2e7d32; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-top: 10px; font-family: var(--font-logo); }
-        .status-badge.offline { background-color: rgba(255, 243, 224, 0.8); color: #e65100; }
-        
+        .catalog-section {
+            padding: 60px 0;
+            min-height: 60vh;
+        }
+
+        .catalog-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .catalog-header h2 {
+            font-family: var(--font-logo);
+            font-size: 36px;
+            color: var(--text-dark-primary);
+            font-weight: 700;
+        }
+
+        .catalog-header p {
+            margin-top: 10px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background-color: rgba(232, 245, 233, 0.8);
+            color: #2e7d32;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 10px;
+            font-family: var(--font-logo);
+        }
+
+        .status-badge.offline {
+            background-color: rgba(255, 243, 224, 0.8);
+            color: #e65100;
+        }
+
         /* Menu de Categorias */
         .catalog-categories {
             display: flex;
@@ -229,10 +390,17 @@
             overflow-x: auto;
             padding: 10px 24px 20px 24px;
             margin: 0 -24px 30px -24px;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE/Edge */
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE/Edge */
         }
-        .catalog-categories::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+        .catalog-categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Chrome/Safari */
 
         .category-btn {
             white-space: nowrap;
@@ -247,7 +415,11 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        .category-btn:hover { border-color: var(--primary-graphic-color); }
+
+        .category-btn:hover {
+            border-color: var(--primary-graphic-color);
+        }
+
         .category-btn.active {
             background-color: var(--primary-graphic-color);
             color: var(--white);
@@ -255,149 +427,570 @@
             box-shadow: 0 4px 12px rgba(74, 59, 50, 0.2);
         }
 
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
-        .product-card { 
-            background: rgba(255, 255, 255, 0.6); 
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border-radius: 12px; overflow: hidden; 
-            border: 1px solid rgba(255, 255, 255, 0.6); 
-            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.4s ease; 
-            display: flex; flex-direction: column; 
-            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
         }
-        .product-card.hidden { display: none; }
-        .product-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
-        .product-img { width: 100%; height: 220px; object-fit: cover; }
-        .product-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
-        .product-title { font-size: 18px; font-weight: 600; font-family: var(--font-logo); margin-bottom: 10px; }
-        .product-desc { font-size: 14px; margin-bottom: 15px; flex-grow: 1; }
-        .product-price { font-size: 20px; font-weight: 700; color: var(--primary-graphic-color); margin-bottom: 15px; font-family: var(--font-logo);}
-        .add-to-cart-btn { width: 100%; padding: 12px; background-color: transparent; color: var(--primary-graphic-color); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 8px; font-family: var(--font-logo); font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .add-to-cart-btn:hover { background-color: var(--primary-graphic-color); color: var(--white); }
+
+        .product-card.hidden {
+            display: none;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-title {
+            font-size: 18px;
+            font-weight: 600;
+            font-family: var(--font-logo);
+            margin-bottom: 10px;
+        }
+
+        .product-desc {
+            font-size: 14px;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+
+        .product-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-graphic-color);
+            margin-bottom: 15px;
+            font-family: var(--font-logo);
+        }
+
+        .add-to-cart-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: transparent;
+            color: var(--primary-graphic-color);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 8px;
+            font-family: var(--font-logo);
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: var(--primary-graphic-color);
+            color: var(--white);
+        }
 
         /* --- Carrinho Modal Lateral --- */
-        .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; display: none; opacity: 0; transition: opacity 0.3s ease; }
-        .cart-sidebar { 
-            position: fixed; top: 0; right: -400px; width: 100%; max-width: 400px; height: 100%; 
-            background: rgba(255, 255, 255, 0.75); 
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 100%;
+            max-width: 400px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
-            z-index: 1000; box-shadow: -5px 0 30px rgba(0,0,0,0.1); 
+            z-index: 1000;
+            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
             border-left: 1px solid rgba(255, 255, 255, 0.6);
-            display: flex; flex-direction: column; transition: right 0.3s ease; 
+            display: flex;
+            flex-direction: column;
+            transition: right 0.3s ease;
         }
-        .cart-sidebar.open { right: 0; }
-        .cart-overlay.open { display: block; opacity: 1; }
-        .cart-header { padding: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.6); display: flex; justify-content: space-between; align-items: center; }
-        .cart-header h3 { font-family: var(--font-logo); font-size: 20px; }
-        .close-cart { background: none; border: none; font-size: 24px; cursor: pointer; color: #555; }
-        .cart-items { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .cart-empty-msg { text-align: center; color: #888; margin-top: 50px; font-style: italic; }
-        .cart-item { display: flex; gap: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.6); padding-bottom: 15px; }
-        .cart-item-img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; }
-        .cart-item-details { flex-grow: 1; }
-        .cart-item-title { font-weight: 600; font-size: 14px; margin-bottom: 5px; font-family: var(--font-logo); }
-        .cart-item-price { font-size: 14px; color: var(--primary-graphic-color); font-weight: 600; }
-        .cart-item-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
-        .qty-control { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.5); border-radius: 8px; padding: 2px 8px; border: 1px solid rgba(255, 255, 255, 0.6); }
-        .qty-btn { background: none; border: none; cursor: pointer; font-size: 16px; color: var(--primary-graphic-color); font-weight: bold; }
-        .remove-item { color: #d9534f; background: none; border: none; cursor: pointer; font-size: 14px; }
-        .cart-footer { padding: 20px; border-top: 1px solid rgba(255, 255, 255, 0.6); background: rgba(255, 255, 255, 0.3); }
-        .cart-total { display: flex; justify-content: space-between; font-size: 18px; font-weight: 700; margin-bottom: 15px; font-family: var(--font-logo); }
-        .checkout-btn { width: 100%; background-color: var(--success-color); color: white; border: 1px solid rgba(255, 255, 255, 0.6); padding: 15px; font-size: 16px; font-family: var(--font-logo); font-weight: 600; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.3s; }
-        .checkout-btn:hover { background-color: #20b858; }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-overlay.open {
+            display: block;
+            opacity: 1;
+        }
+
+        .cart-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-header h3 {
+            font-family: var(--font-logo);
+            font-size: 20px;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #555;
+        }
+
+        .cart-items {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .cart-empty-msg {
+            text-align: center;
+            color: #888;
+            margin-top: 50px;
+            font-style: italic;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+            padding-bottom: 15px;
+        }
+
+        .cart-item-img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .cart-item-details {
+            flex-grow: 1;
+        }
+
+        .cart-item-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-family: var(--font-logo);
+        }
+
+        .cart-item-price {
+            font-size: 14px;
+            color: var(--primary-graphic-color);
+            font-weight: 600;
+        }
+
+        .cart-item-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .qty-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            padding: 2px 8px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .qty-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: var(--primary-graphic-color);
+            font-weight: bold;
+        }
+
+        .remove-item {
+            color: #d9534f;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .cart-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-family: var(--font-logo);
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background-color: var(--success-color);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            padding: 15px;
+            font-size: 16px;
+            font-family: var(--font-logo);
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+
+        .checkout-btn:hover {
+            background-color: #20b858;
+        }
 
         /* --- Modal de Identificação --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
-        .modal-overlay.open { display: flex; animation: fadeIn 0.3s ease; }
-        .checkout-modal { 
-            background: rgba(255, 255, 255, 0.85); 
-            backdrop-filter: blur(24px); 
-            padding: 40px; 
-            border-radius: 16px; 
-            width: 100%; 
-            max-width: 500px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2); 
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-overlay.open {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .checkout-modal {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(24px);
+            padding: 40px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.6);
         }
-        .checkout-modal h3 { font-family: var(--font-logo); font-size: 24px; margin-bottom: 25px; text-align: center; color: var(--primary-graphic-color); }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #555; }
-        .form-group input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.5); font-family: var(--font-main); transition: 0.3s; }
-        .form-group input:focus { outline: none; border-color: var(--primary-graphic-color); background: #fff; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
-        .btn-cancel { background: #eee; color: #555; padding: 12px; border-radius: 8px; border: none; font-family: var(--font-logo); font-weight: 600; cursor: pointer; }
-        .btn-submit { background: var(--success-color); color: white; padding: 12px; border-radius: 8px; border: none; font-family: var(--font-logo); font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .btn-submit:disabled { background: #ccc; cursor: not-allowed; opacity: 0.7; }
+
+        .checkout-modal h3 {
+            font-family: var(--font-logo);
+            font-size: 24px;
+            margin-bottom: 25px;
+            text-align: center;
+            color: var(--primary-graphic-color);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.5);
+            font-family: var(--font-main);
+            transition: 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-graphic-color);
+            background: #fff;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .modal-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn-cancel {
+            background: #eee;
+            color: #555;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-family: var(--font-logo);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            background: var(--success-color);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-family: var(--font-logo);
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-submit:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
 
         /* --- Avaliações --- */
-        .reviews { padding: 90px 0; text-align: center; }
-        .section-title { font-size: 36px; color: var(--text-dark-primary); margin-bottom: 10px; font-family: var(--font-logo); font-weight: 700; }
-        .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-top: 30px;}
-        .review-card { 
-            background: rgba(255, 255, 255, 0.6); 
+        .reviews {
+            padding: 90px 0;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 36px;
+            color: var(--text-dark-primary);
+            margin-bottom: 10px;
+            font-family: var(--font-logo);
+            font-weight: 700;
+        }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .review-card {
+            background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            padding: 35px; border-radius: 12px; 
+            padding: 35px;
+            border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.6);
-            text-align: left; 
-            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+            text-align: left;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
         }
-        .stars { color: #fbbc04; margin-bottom: 15px; }
-        
-        .review-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-        .reviewer-photo { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
-        .reviewer-info { display: flex; flex-direction: column; }
-        .reviewer-name { font-weight: 600; font-family: var(--font-logo); color: var(--text-dark-primary); font-size: 15px; }
-        .review-card .stars { margin-bottom: 0; font-size: 13px; margin-top: 3px; }
-        
+
+        .stars {
+            color: #fbbc04;
+            margin-bottom: 15px;
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .reviewer-photo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .reviewer-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .reviewer-name {
+            font-weight: 600;
+            font-family: var(--font-logo);
+            color: var(--text-dark-primary);
+            font-size: 15px;
+        }
+
+        .review-card .stars {
+            margin-bottom: 0;
+            font-size: 13px;
+            margin-top: 3px;
+        }
+
         /* --- Contatos --- */
-        .contact { background-color: transparent; padding: 90px 0; border-top: 1px solid rgba(0,0,0,0.05); }
-        .contact-grid { display: grid; grid-template-columns: 1fr; gap: 30px; margin-top: 50px; }
-        @media (min-width: 768px) {
-            .contact-grid { grid-template-columns: repeat(2, 1fr); }
+        .contact {
+            background-color: transparent;
+            padding: 90px 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
         }
-        .contact-item { 
-            display: flex; 
-            align-items: flex-start; 
-            gap: 20px; 
-            background: rgba(255, 255, 255, 0.6); 
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        @media (min-width: 768px) {
+            .contact-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            padding: 30px; 
-            border-radius: 12px; 
+            padding: 30px;
+            border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .contact-item:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
-        .contact-icon { font-size: 28px; color: var(--primary-graphic-color); margin-top: 5px; }
-        .contact-info h3 { font-size: 20px; font-family: var(--font-logo); margin-bottom: 8px; font-weight: 600; }
-        
-        footer { 
-            background: rgba(74, 59, 50, 0.85); 
+
+        .contact-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-icon {
+            font-size: 28px;
+            color: var(--primary-graphic-color);
+            margin-top: 5px;
+        }
+
+        .contact-info h3 {
+            font-size: 20px;
+            font-family: var(--font-logo);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        footer {
+            background: rgba(74, 59, 50, 0.85);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--white); 
-            text-align: center; 
-            padding: 25px 0; 
-            font-size: 14px; 
+            color: var(--white);
+            text-align: center;
+            padding: 25px 0;
+            font-size: 14px;
         }
-        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background-color: #25d366; color: var(--white); border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.6); display: flex; justify-content: center; align-items: center; font-size: 32px; box-shadow: 0 6px 15px rgba(0,0,0,0.2); z-index: 900; transition: 0.3s; text-decoration: none; }
-        .whatsapp-float:hover { transform: scale(1.1); background-color: #20b858; color: var(--white); }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #25d366;
+            color: var(--white);
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            z-index: 900;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            background-color: #20b858;
+            color: var(--white);
+        }
 
         @media (max-width: 768px) {
-            .header-content { flex-direction: column; height: auto; padding: 15px 0; gap: 15px; }
-            .nav-links { flex-wrap: wrap; justify-content: center; gap: 15px; }
-            .whatsapp-float { width: 55px; height: 55px; font-size: 28px; bottom: 20px; right: 20px; }
-            .carousel-container { height: 380px; }
-            .ai-output .product-img { object-fit: cover; aspect-ratio: 1 / 1; width: 100%; height: auto; border-radius: 12px; }
+            .header-content {
+                flex-direction: column;
+                height: auto;
+                padding: 15px 0;
+                gap: 15px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+
+            .whatsapp-float {
+                width: 55px;
+                height: 55px;
+                font-size: 28px;
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .carousel-container {
+                height: 380px;
+            }
+
+            .ai-output .product-img {
+                object-fit: cover;
+                aspect-ratio: 1 / 1;
+                width: 100%;
+                height: auto;
+                border-radius: 12px;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <header>
@@ -411,7 +1004,7 @@
                 <a onclick="switchPage('catalog')" id="link-catalog">Catálogo</a>
                 <a onclick="switchPage('home'); setTimeout(()=>window.location.hash='#avaliacoes', 100);">Avaliações</a>
                 <a onclick="switchPage('home'); setTimeout(()=>window.location.hash='#contato', 100);">Contato</a>
-                
+
                 <div class="cart-icon-wrapper" onclick="toggleCart()">
                     <i class="fas fa-shopping-cart"></i>
                     <span class="cart-badge" id="cart-badge">0</span>
@@ -422,16 +1015,18 @@
 
     <main>
         <div id="page-home" class="page-view active">
-            
+
             <section class="hero-3d-section">
                 <div class="container">
                     <h1>Móveis de Alto Padrão em Bocaiúva</h1>
-                    <p class="secondary-text">Descubra móveis incríveis que vão durar para a vida inteira. A sua principal loja de móveis em Minas Gerais.</p>
-                    
+                    <p class="secondary-text">Descubra móveis incríveis que vão durar para a vida inteira. A sua
+                        principal loja de móveis em Minas Gerais.</p>
+
                     <div class="carousel-container" id="carousel-container">
                         <div class="carousel-scene">
                             <div class="carousel-cylinder" id="carousel-cylinder">
-                                <div style="color: var(--primary-graphic-color); margin-top: 150px; font-family: var(--font-logo); font-weight: 600;">
+                                <div
+                                    style="color: var(--primary-graphic-color); margin-top: 150px; font-family: var(--font-logo); font-weight: 600;">
                                     <i class="fas fa-spinner fa-spin"></i> A carregar vitrine 3D...
                                 </div>
                             </div>
@@ -447,11 +1042,14 @@
             <section class="ai-advisor">
                 <div class="container">
                     <h2 class="section-title" style="text-align: center;">Dicas de Decoração</h2>
-                    <p class="secondary-text" style="text-align: center; margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto;">
-                        Não sabe como mobiliar o seu espaço? Descreva o seu ambiente abaixo para obter recomendações personalizadas com o padrão Cepel Arte Decore.
+                    <p class="secondary-text"
+                        style="text-align: center; margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto;">
+                        Não sabe como mobiliar o seu espaço? Descreva o seu ambiente abaixo para obter recomendações
+                        personalizadas com o padrão Cepel Arte Decore.
                     </p>
                     <div class="ai-card">
-                        <textarea id="ai-input" class="secondary-text" placeholder="Ex: Eu tenho uma sala de estar pequena em um apartamento com pouco sol. Gostaria de um ambiente mais aconchegante e espaçoso. Quais móveis devo usar?"></textarea>
+                        <textarea id="ai-input" class="secondary-text"
+                            placeholder="Ex: Eu tenho uma sala de estar pequena em um apartamento com pouco sol. Gostaria de um ambiente mais aconchegante e espaçoso. Quais móveis devo usar?"></textarea>
                         <button id="ai-submit-btn" class="cta-button" style="width: 100%; text-align: center;">
                             Gerar Dicas de Decoração
                         </button>
@@ -464,12 +1062,16 @@
                 <div class="container">
                     <h2 class="section-title">O que nossos clientes dizem</h2>
                     <div class="google-rating">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                        <span style="font-family: var(--font-logo); font-weight: 600; margin-left: 10px; font-size: 16px;">5,0 (Avaliações no Google)</span>
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                            class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <span
+                            style="font-family: var(--font-logo); font-weight: 600; margin-left: 10px; font-size: 16px;">5,0
+                            (Avaliações no Google)</span>
                     </div>
 
                     <div class="reviews-grid" id="dynamic-reviews-grid">
-                        <div style="text-align: center; width: 100%; grid-column: 1 / -1; color: var(--primary-graphic-color); font-family: var(--font-logo); font-weight: 600;">
+                        <div
+                            style="text-align: center; width: 100%; grid-column: 1 / -1; color: var(--primary-graphic-color); font-family: var(--font-logo); font-weight: 600;">
                             <i class="fas fa-spinner fa-spin"></i> Sincronizando avaliações do Google...
                         </div>
                     </div>
@@ -484,7 +1086,8 @@
                             <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
                             <div class="contact-info">
                                 <h3>Endereço</h3>
-                                <a href="https://www.google.com/maps/search/?api=1&query=R.+José+Brandão+Filho,+416+-+Centro,+Bocaiúva+-+MG,+39390-000" class="secondary-text" target="_blank">
+                                <a href="https://www.google.com/maps/search/?api=1&query=R.+José+Brandão+Filho,+416+-+Centro,+Bocaiúva+-+MG,+39390-000"
+                                    class="secondary-text" target="_blank">
                                     R. José Brandão Filho, 416 - Centro<br>Bocaiúva - MG, 39390-000
                                 </a>
                             </div>
@@ -503,7 +1106,8 @@
                                 <p class="secondary-text">Segunda a Sexta: 8:00 - 18:00<br>Sábado: 8:00 - 13:00</p>
                             </div>
                         </div>
-                        <a href="https://www.instagram.com/cepelartedecore" target="_blank" rel="noopener noreferrer" class="contact-item">
+                        <a href="https://www.instagram.com/cepelartedecore" target="_blank" rel="noopener noreferrer"
+                            class="contact-item">
                             <div class="contact-icon"><i class="fab fa-instagram"></i></div>
                             <div class="contact-info">
                                 <h3>Instagram</h3>
@@ -520,39 +1124,63 @@
                 <div class="container">
                     <div class="catalog-header">
                         <h2 class="section-title">Nosso Catálogo</h2>
-                        <p class="secondary-text" style="max-width: 700px; margin-left: auto; margin-right: auto;">Adicione os itens ao carrinho e conclua seu atendimento pelo WhatsApp.</p>
+                        <p class="secondary-text" style="max-width: 700px; margin-left: auto; margin-right: auto;">
+                            Adicione os itens ao carrinho e conclua seu atendimento pelo WhatsApp.</p>
                     </div>
 
                     <div class="catalog-categories" id="catalog-categories">
                         <button class="category-btn active" onclick="filterByCategory('Todos', this)">Todos</button>
                         <button class="category-btn" onclick="filterByCategory('Almofadas', this)">Almofadas</button>
                         <button class="category-btn" onclick="filterByCategory('Aparadores', this)">Aparadores</button>
-                        <button class="category-btn" onclick="filterByCategory('Banquetas e Bancos', this)">Banquetas e Bancos</button>
+                        <button class="category-btn" onclick="filterByCategory('Banquetas e Bancos', this)">Banquetas e
+                            Bancos</button>
                         <button class="category-btn" onclick="filterByCategory('Buffet', this)">Buffet</button>
-                        <button class="category-btn" onclick="filterByCategory('Cadeiras e Poltronas', this)">Cadeiras e Poltronas</button>
-                        <button class="category-btn" onclick="filterByCategory('Cama, Mesa e Banho (Têxteis)', this)">Cama, Mesa e Banho (Têxteis)</button>
-                        <button class="category-btn" onclick="filterByCategory('Camas, Cabeceiras e Colchões', this)">Camas, Cabeceiras e Colchões</button>
-                        <button class="category-btn" onclick="filterByCategory('Cortinas e Persianas', this)">Cortinas e Persianas</button>
+                        <button class="category-btn" onclick="filterByCategory('Cadeiras e Poltronas', this)">Cadeiras e
+                            Poltronas</button>
+                        <button class="category-btn"
+                            onclick="filterByCategory('Cama, Mesa e Banho (Têxteis)', this)">Cama, Mesa e Banho
+                            (Têxteis)</button>
+                        <button class="category-btn"
+                            onclick="filterByCategory('Camas, Cabeceiras e Colchões', this)">Camas, Cabeceiras e
+                            Colchões</button>
+                        <button class="category-btn" onclick="filterByCategory('Cortinas e Persianas', this)">Cortinas e
+                            Persianas</button>
                         <button class="category-btn" onclick="filterByCategory('Espelhos', this)">Espelhos</button>
-                        <button class="category-btn" onclick="filterByCategory('Guarda Roupa', this)">Guarda Roupa</button>
+                        <button class="category-btn" onclick="filterByCategory('Guarda Roupa', this)">Guarda
+                            Roupa</button>
                         <button class="category-btn" onclick="filterByCategory('Iluminação', this)">Iluminação</button>
-                        <button class="category-btn" onclick="filterByCategory('Mesas de Centro, Laterais e Escritório', this)">Mesas de Centro, Laterais e Escritório</button>
-                        <button class="category-btn" onclick="filterByCategory('Mesas de jantar', this)">Mesas de jantar</button>
-                        <button class="category-btn" onclick="filterByCategory('Mesas para área externa', this)">Mesas para área externa</button>
-                        <button class="category-btn" onclick="filterByCategory('Móveis de Escritório / Armazenamento', this)">Móveis de Escritório / Armazenamento</button>
-                        <button class="category-btn" onclick="filterByCategory('Objetos Decorativos e Porta Retratos', this)">Objetos Decorativos e Porta Retratos</button>
+                        <button class="category-btn"
+                            onclick="filterByCategory('Mesas de Centro, Laterais e Escritório', this)">Mesas de Centro,
+                            Laterais e Escritório</button>
+                        <button class="category-btn" onclick="filterByCategory('Mesas de jantar', this)">Mesas de
+                            jantar</button>
+                        <button class="category-btn" onclick="filterByCategory('Mesas para área externa', this)">Mesas
+                            para área externa</button>
+                        <button class="category-btn"
+                            onclick="filterByCategory('Móveis de Escritório / Armazenamento', this)">Móveis de
+                            Escritório / Armazenamento</button>
+                        <button class="category-btn"
+                            onclick="filterByCategory('Objetos Decorativos e Porta Retratos', this)">Objetos Decorativos
+                            e Porta Retratos</button>
                         <button class="category-btn" onclick="filterByCategory('Painéis', this)">Painéis</button>
                         <button class="category-btn" onclick="filterByCategory('Poltronas', this)">Poltronas</button>
                         <button class="category-btn" onclick="filterByCategory('Puffs', this)">Puffs</button>
-                        <button class="category-btn" onclick="filterByCategory('Quadros e Telas', this)">Quadros e Telas</button>
-                        <button class="category-btn" onclick="filterByCategory('Racks e Homes', this)">Racks e Homes</button>
+                        <button class="category-btn" onclick="filterByCategory('Quadros e Telas', this)">Quadros e
+                            Telas</button>
+                        <button class="category-btn" onclick="filterByCategory('Racks e Homes', this)">Racks e
+                            Homes</button>
                         <button class="category-btn" onclick="filterByCategory('Sofás', this)">Sofás</button>
                         <button class="category-btn" onclick="filterByCategory('Tapetes', this)">Tapetes</button>
-                        <button class="category-btn" onclick="filterByCategory('Utilidades Domésticas / Mesa Posta', this)">Utilidades Domésticas / Mesa Posta</button>
-                        <button class="category-btn" onclick="filterByCategory('Vasos e Plantas', this)">Vasos e Plantas</button>
-                        <button class="category-btn" onclick="filterByCategory('Diversos (Não classificados)', this)">Diversos (Não classificados)</button>
+                        <button class="category-btn"
+                            onclick="filterByCategory('Utilidades Domésticas / Mesa Posta', this)">Utilidades Domésticas
+                            / Mesa Posta</button>
+                        <button class="category-btn" onclick="filterByCategory('Vasos e Plantas', this)">Vasos e
+                            Plantas</button>
+                        <button class="category-btn"
+                            onclick="filterByCategory('Diversos (Não classificados)', this)">Diversos (Não
+                            classificados)</button>
                     </div>
-                    
+
                     <div class="product-grid" id="product-grid">
                     </div>
                 </div>
@@ -582,7 +1210,8 @@
 
     <footer>
         <div class="container">
-            <p style="font-family: var(--font-logo); font-weight: 400;">© 2026 Cepel Arte Decore. Todos os direitos reservados.</p>
+            <p style="font-family: var(--font-logo); font-weight: 400;">© 2026 Cepel Arte Decore. Todos os direitos
+                reservados.</p>
             <p style="font-size: 12px; margin-top: 5px; opacity: 0.7; font-family: var(--font-logo);">KrM Corp</p>
         </div>
     </footer>
@@ -650,8 +1279,8 @@
         async function loadCatalog() {
             try {
                 const response = await fetch('./catalog.json');
-                if(!response.ok) throw new Error("Catálogo não encontrado");
-                
+                if (!response.ok) throw new Error("Catálogo não encontrado");
+
                 siteCatalog = await response.json();
                 window.siteCatalog = siteCatalog; // Mantendo referência global conforme solicitado
 
@@ -661,7 +1290,7 @@
 
             } catch (error) {
                 console.error("Erro ao carregar o catálogo JSON:", error);
-                
+
                 // Fallback para modo demonstração se o JSON falhar
                 siteCatalog = [
                     { id: "DEMO_1", name: "Sofá Retrátil Florença", description: "Demonstração: Sincronização pendente.", price: 3200.00, image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=400&q=80", category: "Sofás" },
@@ -682,11 +1311,11 @@
 
         function renderCarouselFrame() {
             if (!isDragging) {
-                targetRotation -= 0.15; 
+                targetRotation -= 0.15;
             }
-            
+
             currentRotation += (targetRotation - currentRotation) * 0.1;
-            
+
             const cylinder = document.getElementById('carousel-cylinder');
             if (cylinder) {
                 cylinder.style.transform = `rotateY(${currentRotation}deg)`;
@@ -706,7 +1335,7 @@
             window.onpointermove = (e) => {
                 if (!isDragging) return;
                 const deltaX = e.pageX - startX;
-                targetRotation += deltaX * 0.25; 
+                targetRotation += deltaX * 0.25;
                 startX = e.pageX;
             };
 
@@ -719,22 +1348,22 @@
 
         function init3DCarousel() {
             const cylinder = document.getElementById('carousel-cylinder');
-            if(!cylinder) return;
-            
-            const cards = (window.siteCatalog || []).slice(0, 12); 
-            const faceCount = cards.length;
-            if(faceCount === 0) return;
+            if (!cylinder) return;
 
-            cylinder.innerHTML = ''; 
+            const cards = (window.siteCatalog || []).slice(0, 12);
+            const faceCount = cards.length;
+            if (faceCount === 0) return;
+
+            cylinder.innerHTML = '';
 
             const isMobile = window.innerWidth <= 640;
             const cardWidth = isMobile ? 200 : 250;
             const cardHeight = isMobile ? 200 : 250;
-            
+
             cylinder.style.width = `${cardWidth}px`;
             cylinder.style.height = `${cardHeight}px`;
 
-            const radius = Math.max((cardWidth / 2) / Math.tan(Math.PI / faceCount) + (isMobile? 20 : 40), isMobile ? 180 : 250);
+            const radius = Math.max((cardWidth / 2) / Math.tan(Math.PI / faceCount) + (isMobile ? 20 : 40), isMobile ? 180 : 250);
 
             cards.forEach((product, i) => {
                 const angle = i * (360 / faceCount);
@@ -743,20 +1372,20 @@
                 card.style.width = `${cardWidth}px`;
                 card.style.height = `${cardHeight}px`;
                 card.style.transform = `rotateY(${angle}deg) translateZ(${radius}px)`;
-                
+
                 card.innerHTML = `<img src="${product.image}" alt="${product.name}" draggable="false">`;
                 cylinder.appendChild(card);
             });
-            
+
             init3DDrag();
         }
 
         // --- SISTEMA CATÁLOGO ---
         function renderCatalog(productsToRender) {
             const grid = document.getElementById('product-grid');
-            if(!grid) return;
+            if (!grid) return;
             grid.innerHTML = '';
-            
+
             if (productsToRender.length === 0) {
                 grid.innerHTML = '<p class="secondary-text" style="grid-column: 1/-1; text-align: center; padding: 40px;">Nenhum produto encontrado nesta categoria.</p>';
                 return;
@@ -782,7 +1411,7 @@
         function filterByCategory(category, btn) {
             // Atualiza classe ativa nos botões
             document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-            if(btn) btn.classList.add('active');
+            if (btn) btn.classList.add('active');
 
             // Filtra os dados da variável global
             let filteredProducts = [];
@@ -800,14 +1429,14 @@
         function addToCart(productId) {
             const product = window.siteCatalog.find(p => p.id === productId);
             if (!product) return;
-            
+
             const existingItem = cart.find(item => item.product.id === productId);
             if (existingItem) existingItem.quantity += 1;
             else cart.push({ product: product, quantity: 1 });
             updateCartUI();
-            
+
             const sidebar = document.getElementById('cart-sidebar');
-            if(!sidebar.classList.contains('open')) toggleCart();
+            if (!sidebar.classList.contains('open')) toggleCart();
         }
 
         function changeQty(productId, delta) {
@@ -874,7 +1503,7 @@
         function initFormListeners() {
             const cepInput = document.getElementById('cust-cep');
             const inputs = ['cust-name', 'cust-cep', 'cust-city', 'cust-street', 'cust-number'];
-            
+
             inputs.forEach(id => {
                 document.getElementById(id).addEventListener('input', validateForm);
             });
@@ -901,7 +1530,7 @@
             const city = document.getElementById('cust-city').value.trim();
             const street = document.getElementById('cust-street').value.trim();
             const number = document.getElementById('cust-number').value.trim();
-            
+
             const btn = document.getElementById('btn-final-whatsapp');
             btn.disabled = !(name && cep.length >= 8 && city && street && number);
         }
@@ -914,7 +1543,7 @@
             const number = document.getElementById('cust-number').value.trim();
 
             let message = `Olá! Meu nome é ${name}. Meu endereço para entrega é: ${street}, ${number} - ${city}, CEP: ${cep}.\n\nGostaria de encomendar os seguintes itens do catálogo:\n\n`;
-            
+
             let total = 0;
             cart.forEach(item => {
                 const itemPrice = parseFloat(item.product.price);
@@ -922,9 +1551,9 @@
                 total += subtotal;
                 message += `▪ *${item.quantity}x* ${item.product.name} - ${formatMoney(subtotal)}\n`;
             });
-            
+
             message += `\n*Total Estimado: ${formatMoney(total)}*`;
-            
+
             const phone = "553832511000";
             window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
             closeCheckoutModal();
@@ -951,7 +1580,7 @@
 
                 const fiveStarReviews = googleApiResponse.filter(review => review.rating === 5);
                 reviewsGrid.innerHTML = '';
-                
+
                 fiveStarReviews.forEach(review => {
                     const avatarUrl = review.profile_photo_url ? review.profile_photo_url : `https://ui-avatars.com/api/?name=${encodeURIComponent(review.author_name)}&background=4A3B32&color=fff`;
                     reviewsGrid.innerHTML += `
@@ -968,7 +1597,7 @@
                     `;
                 });
             } catch (error) {
-                if(reviewsGrid) reviewsGrid.innerHTML = '<p style="color: red; grid-column: 1/-1; text-align: center;">Não foi possível sincronizar as avaliações no momento.</p>';
+                if (reviewsGrid) reviewsGrid.innerHTML = '<p style="color: red; grid-column: 1/-1; text-align: center;">Não foi possível sincronizar as avaliações no momento.</p>';
             }
         }
 
@@ -1001,7 +1630,7 @@
                     const errorJson = await response.json().catch(() => ({}));
                     throw new Error(errorJson.detalhes || 'Falha na resposta do servidor.');
                 }
-                
+
                 const aiResponse = await response.json();
                 let htmlOutput = marked.parse(aiResponse.texto_dica);
 
@@ -1033,10 +1662,11 @@
                 console.error(e);
                 aiOutput.innerHTML = `<p style="color: #d9534f; font-weight: bold; font-family: var(--font-logo);">Ops! ${e.message}</p>`;
             } finally {
-                aiSubmitBtn.disabled = false; 
+                aiSubmitBtn.disabled = false;
                 aiSubmitBtn.innerHTML = 'Gerar Dicas de Decoração';
             }
         });
     </script>
 </body>
+
 </html>
