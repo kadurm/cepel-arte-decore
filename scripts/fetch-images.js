@@ -5,7 +5,7 @@ const google = require('googlethis');
 // Utilitário para o timeout (Rate Limiting)
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-// Função Sanitizadora
+// 2. RESTAURAÇÃO DA BLINDAGEM (Sanitização)
 function cleanSearchTerm(name) {
   if (!name) return '';
   let cleaned = name.toString();
@@ -34,24 +34,56 @@ function cleanSearchTerm(name) {
   return cleaned;
 }
 
+// 1. ROTINA DE PURGA (Hard Reset)
+function hardReset(catalogPath, csvPath) {
+  console.log('--- [ROTINA DE PURGA: HARD RESET] ---');
+  console.log('Limpando sujeira do teste anterior e imagens irrelevantes injetadas...');
+  
+  // Apaga ou zera o arquivo 'novas_fotos.csv' com cabeçalhos limpos
+  fs.writeFileSync(csvPath, '\uFEFF"Código Produto","URL Foto Encontrada"\n', 'utf8');
+  console.log(' > Arquivo novas_fotos.csv formatado/zerado com segurança.');
+
+  // Leia o 'catalog.json' e force o campo image: "" para TODOS OS PRODUTOS
+  if (fs.existsSync(catalogPath)) {
+    const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+    let wiped = 0;
+    
+    for (let item of catalog) {
+      if (item.image !== "") {
+         item.image = ""; // Limpa injeções erradas do teste passado
+         wiped++;
+      }
+    }
+    
+    // Sobrescrevendo a base do catalog
+    fs.writeFileSync(catalogPath, JSON.stringify(catalog, null, 2), 'utf8');
+    console.log(` > catalog.json redefinido: ${wiped} imagens corruptas ou de baixa fidelidade foram removidas.`);
+  }
+
+  console.log('--- [HARD RESET CONCLUÍDO] Lousa em branco perfeitamente restaurada! ---\n');
+}
+
 async function main() {
   const rootDir = path.join(__dirname, '..');
   const catalogPath = path.join(rootDir, 'catalog.json');
   const csvPath = path.join(rootDir, 'novas_fotos.csv');
 
-  // Lendo o catálogo
   if (!fs.existsSync(catalogPath)) {
     console.error(`ERRO: O arquivo catalog.json não foi encontrado em: ${catalogPath}`);
     process.exit(1);
   }
 
+  // Habilitando Hard Reset via linha de comando para não atrapalhar o resume futuro
+  if (process.argv.includes('--hard-reset')) {
+    hardReset(catalogPath, csvPath);
+  }
+
   const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
 
-  // 1. LÓGICA DE ARQUIVO & 2. MEMÓRIA DE ESTADO: 
+  // 4. MANTENHA A ARQUITETURA [LÓGICA DE ARQUIVO E MEMÓRIA DE ESTADO - Resume]
   const processedIds = new Set();
   
   if (fs.existsSync(csvPath)) {
-    // Lendo o CSV para extrair quais códigos já processamos
     const csvContent = fs.readFileSync(csvPath, 'utf8');
     const lines = csvContent.split('\n');
     
@@ -59,7 +91,6 @@ async function main() {
       const line = lines[i].trim();
       if (!line) continue;
       
-      // O formato salvo é: "Código","URL"
       const firstQuoteIdx = line.indexOf('"');
       const secondQuoteIdx = line.indexOf('"', firstQuoteIdx + 1);
       
@@ -69,55 +100,57 @@ async function main() {
          processedIds.add(String(idString));
       }
     }
-    console.log(`[Resume] Arquivo CSV detectado com ${processedIds.size} itens já processados. Eles serão ignorados no loop.\n`);
+    
+    if (processedIds.size > 0) {
+        console.log(`[Resume] CSV detectado com ${processedIds.size} itens já buscados (será usado Pulo Inteligente).\n`);
+    } else {
+        console.log(`[Start] CSV zerado detectado ou recém-purgado...\n`);
+    }
   } else {
-    // Se não existir, criamos o arquivo CSV apenas com o cabeçalho
-    console.log(`[Start] Iniciando nova busca do zero...\n`);
+    console.log(`[Start] Não foi detectado CSV anterior. Iniciando nova busca estrutural...\n`);
     fs.writeFileSync(csvPath, '\uFEFF"Código Produto","URL Foto Encontrada"\n', 'utf8');
   }
 
-  // Filtrando os itens cujo campo 'image' está vazio ou inexistente
+  // Filtrando todos que não tem imagem no JSON novo lido logo após a purga
   const itemsWithoutImage = catalog.filter(item => {
     return !item.image || item.image.trim() === '';
   });
 
   console.log('=============================================');
   console.log(`Total de produtos no catálogo: ${catalog.length}`);
-  console.log(`Produtos sem imagem: ${itemsWithoutImage.length}`);
+  console.log(`Produtos na fila do filtro sem imagem: ${itemsWithoutImage.length}`);
   console.log('=============================================\n');
 
   if (itemsWithoutImage.length === 0) {
-    console.log('Tudo certo! Todos os produtos já possuem imagem.');
+    console.log('Tudo limpo! Não há itens sem imagens processados.');
     return;
   }
 
-  // Fazendo as buscas web com intervalo de segurança
   for (let i = 0; i < itemsWithoutImage.length; i++) {
     const item = itemsWithoutImage[i];
 
-    // 3. PULO INTELIGENTE (Skip): Se já processou, vá para o próximo.
+    // Pulo inteligente (Skip Resume)
     if (processedIds.has(String(item.id))) {
-      console.log(`[${i + 1}/${itemsWithoutImage.length}] Código: ${item.id} -> Já processado anteriormente. Pulando...`);
+      console.log(`[${i + 1}/${itemsWithoutImage.length}] Código: ${item.id} -> Já retido no CSV anterior. Pulando...`);
       continue;
     }
     
-    // Aplicando Função Sanitizadora
+    // RESTAURAÇÃO DA BLINDAGEM - Limpeza do Nome
     const cleanedName = cleanSearchTerm(item.name);
     const categoria = item.category || '';
     
-    // Enriquecimento de Query
-    const searchTerm = `${cleanedName} ${categoria} móveis decoração fundo branco alta resolução`.trim();
+    // 3. RESTAURAÇÃO DA QUERY DE LUXO ENRIQUECIDA EM INGLÊS (Hard Requirement)
+    const searchTerm = `${cleanedName} ${categoria} professional isolated studio product photography white background`.trim();
 
     console.log(`[${i + 1}/${itemsWithoutImage.length}] Código: ${item.id} | Buscando: "${searchTerm}"`);
 
     try {
-      // Fazendo a pesquisa na aba de imagens
       const images = await google.image(searchTerm, { safe: false });
       
       let finalUrl = null;
 
       if (images && images.length > 0) {
-        // Alfândega de URL (Validação Estrita) e Filtro de Lixo
+        // Arquitetura Preservada: Validação Estrita & Filter Lixo
         const strictRegex = /\.(jpg|jpeg|png|webp)(\?.*)?$/i;
         const trashRegex = /(icon|thumbnail|avatar|logo|base64)/i;
 
@@ -126,43 +159,39 @@ async function main() {
            return strictRegex.test(url) && !trashRegex.test(url);
         });
 
-        // Só aceita a imagem se passou na alfândega estrita
         if (validImage) {
             finalUrl = validImage.url;
         }
       }
 
       if (finalUrl) {
-        console.log(`   -> OK: ${finalUrl}`);
+        console.log(`   -> OK [Alta Fidelidade]: ${finalUrl}`);
         
-        // NOVO: INJEÇÃO DIRETA no catalog.json
-        item.image = finalUrl; // Atualiza o objeto referenciado
-        fs.writeFileSync(catalogPath, JSON.stringify(catalog, null, 2), 'utf8'); // Salva fisicamente
+        // MANTENHA A ARQUITETURA [INJEÇÃO DIRETA NO JSON CATALOG]
+        item.image = finalUrl; 
+        fs.writeFileSync(catalogPath, JSON.stringify(catalog, null, 2), 'utf8');
 
-        // Tratando strings para aspas duplas de CSV
+        // Registro de Append e Backup do Sucesso no CSV
         const cleanId = item.id ? String(item.id).replace(/"/g, '""') : '';
         const cleanUrl = finalUrl.replace(/"/g, '""');
         
-        // Mantém o append no CSV como backup/log de segurança
         fs.appendFileSync(csvPath, `"${cleanId}","${cleanUrl}"\n`, 'utf8');
       } else {
-        console.log(`   -> AVISO: Nenhuma imagem passou na validação estrita.`);
+        console.log(`   -> AVISO: A imagem foi barrada pelo bloqueio estrito. URL Ignorada.`);
       }
 
     } catch (error) {
-      console.error(`   -> ERRO na busca:`, error.message);
+      console.error(`   -> ERRO de Requisição HTTP:`, error.message);
     }
 
-    // Rate Limiting: Delay randômico entre 3 a 5 segundos
+    // Arquitetura Preservada: Rate Limiting
     const waitTime = Math.floor(Math.random() * 2000) + 3000; 
-    console.log(`   ⏳ Aguardando ${waitTime}ms...\n`);
+    console.log(`   ⏳ Aguardando limitador (${waitTime}ms)...\n`);
     await delay(waitTime);
   }
 
   console.log(`\n=============================================`);
-  console.log(`Processo finalizado com sucesso!`);
-  console.log(`Foram procuradas fotos para ${itemsWithoutImage.length} produtos.`);
-  console.log(`O resultado foi exportado para: ${csvPath} e atualizado no catalog.json diretamente.`);
+  console.log(`Final de fila finalizado. Arquitetura salva.`);
   console.log(`=============================================`);
 }
 
