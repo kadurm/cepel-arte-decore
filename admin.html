@@ -565,8 +565,8 @@
                 console.log(`[POST] /api/upload -> Uploading image for product ${productId}`);
                 
                 // Lógica Dinâmica de Ambiente (Local vs Produção na Nuvem)
-                const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-                                ? 'http://localhost:3001/api/upload' 
+                const API_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+                                ? 'http://localhost:3001/api/upload'
                                 : 'https://cepel-backend.onrender.com/api/upload';
 
                 // Realizando requisição POST para o backend
