@@ -562,23 +562,26 @@
             formData.append('productId', productId);
 
             try {
-                // Mock da requisição POST (no futuro será: fetch('/api/upload', { method: 'POST', body: formData }))
                 console.log(`[POST] /api/upload -> Uploading image for product ${productId}`);
                 
-                // Simulando tempo de servidor e retorno da URL do Bucket
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                const mockResponse = {
-                    success: true,
-                    url: `https://mock-bucket.s3.amazonaws.com/products/${productId}-${Date.now()}.jpg`
-                };
+                // Realizando requisição POST para o backend
+                const response = await fetch('http://localhost:3001/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
 
-                console.log(`[SUCCESS] Backend retornou a URL segura: ${mockResponse.url}`);
-                console.log(`[UPDATE] Backend disparou atualização no Google Sheets para o ID: ${productId}`);
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                console.log(`[SUCCESS] Backend respondeu:`, result);
 
                 // Sucesso UI
                 btnUpload.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Enviar Imagem e Atualizar Produto';
                 document.getElementById('upload-status').style.display = 'block';
+                document.getElementById('upload-status').innerHTML = `<i class="fa-solid fa-circle-check"></i> <b>${result.message}</b><br>Produto: ${result.productId} | Tamanho: ${result.size} bytes`;
             } catch (error) {
                 console.error("Upload failed", error);
                 alert('Erro ao realizar upload da imagem.');
