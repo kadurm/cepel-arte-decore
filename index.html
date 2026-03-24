@@ -1372,20 +1372,33 @@
         }
 
         // --- SISTEMA CATÁLOGO ---
-        function renderCatalog(productsToRender) {
+        let itensExibidos = 12;
+        let currentProductsLayout = [];
+
+        function renderCatalog(productsToRender, append = false) {
             const grid = document.getElementById('product-grid');
             if (!grid) return;
-            grid.innerHTML = '';
 
-            if (productsToRender.length === 0) {
+            if (!append) {
+                grid.innerHTML = '';
+                currentProductsLayout = productsToRender;
+            }
+
+            if (currentProductsLayout.length === 0) {
                 grid.innerHTML = '<p class="secondary-text" style="grid-column: 1/-1; text-align: center; padding: 40px;">Nenhum produto encontrado nesta categoria.</p>';
                 return;
             }
 
-            productsToRender.forEach(product => {
-                grid.innerHTML += `
+            // Performance: Load only the slice chunk mapping instead of mapping the entire massive array into DOM
+            const startIndex = append ? (itensExibidos - 12) : 0;
+            const endIndex = Math.min(itensExibidos, currentProductsLayout.length);
+            const itemsToDraw = currentProductsLayout.slice(startIndex, endIndex);
+
+            let htmlBatch = '';
+            itemsToDraw.forEach(product => {
+                htmlBatch += `
                     <div class="product-card">
-                        <img src="${product.image}" alt="${product.name}" class="product-img">
+                        <img src="${product.image}" alt="${product.name}" class="product-img" loading="lazy">
                         <div class="product-info">
                             <h3 class="product-title">${product.name}</h3>
                             <p class="product-desc secondary-text">${product.description}</p>
@@ -1396,9 +1409,42 @@
                     </div>
                 `;
             });
+            
+            // Appends securely as batch strings - prevents N squared DOM redraws
+            grid.insertAdjacentHTML('beforeend', htmlBatch);
+
+            renderLoadMoreBtn();
+        }
+
+        function renderLoadMoreBtn() {
+            let btnContainer = document.getElementById('load-more-container');
+            if (!btnContainer) {
+                const gridNode = document.getElementById('product-grid');
+                btnContainer = document.createElement('div');
+                btnContainer.id = 'load-more-container';
+                btnContainer.style.textAlign = 'center';
+                btnContainer.style.marginTop = '40px';
+                gridNode.parentNode.insertBefore(btnContainer, gridNode.nextSibling);
+            }
+
+            if (itensExibidos < currentProductsLayout.length) {
+                btnContainer.innerHTML = `
+                    <button id="load-more-btn" class="cta-button" style="padding: 12px 30px; font-size: 16px;">
+                        Carregar Mais Produtos <i class="fas fa-chevron-down" style="margin-left: 8px;"></i>
+                    </button>
+                `;
+                document.getElementById('load-more-btn').addEventListener('click', () => {
+                    itensExibidos += 12;
+                    renderCatalog(currentProductsLayout, true);
+                });
+            } else {
+                btnContainer.innerHTML = '';
+            }
         }
 
         function filterByCategory(category, btn) {
+            itensExibidos = 12;
+            
             // Atualiza classe ativa nos botões
             document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
@@ -1412,7 +1458,7 @@
             }
 
             // Renderiza apenas os filtrados
-            renderCatalog(filteredProducts);
+            renderCatalog(filteredProducts, false);
         }
 
         // --- FUNÇÕES DO CARRINHO ---
