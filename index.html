@@ -1143,6 +1143,12 @@
                         <h2 class="section-title">Nosso Catálogo</h2>
                         <p class="secondary-text" style="max-width: 700px; margin-left: auto; margin-right: auto;">
                             Adicione os itens ao carrinho e conclua seu atendimento pelo WhatsApp.</p>
+                        
+                        <div class="search-container" style="max-width: 500px; margin: 25px auto 0 auto; position: relative;">
+                            <i class="fas fa-search" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: rgba(74, 59, 50, 0.5);"></i>
+                            <input type="search" id="searchInput" placeholder="O que você está procurando?" 
+                                style="width: 100%; padding: 14px 20px 14px 45px; border-radius: 50px; border: 1px solid rgba(74, 59, 50, 0.3); font-family: var(--font-main); font-size: 15px; outline: none; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: 0.3s; background-color: rgba(255,255,255,0.7); backdrop-filter: blur(10px);">
+                        </div>
                     </div>
 
                     <div class="catalog-categories" id="catalog-categories">
@@ -1397,7 +1403,7 @@
 
         // --- SISTEMA CATÁLOGO ---
         let itensExibidos = 12;
-        let currentProductsLayout = [];
+        let filteredCatalog = [];
 
         function renderCatalog(productsToRender, append = false) {
             const grid = document.getElementById('product-grid');
@@ -1405,18 +1411,17 @@
 
             if (!append) {
                 grid.innerHTML = '';
-                currentProductsLayout = productsToRender;
+                filteredCatalog = productsToRender;
             }
 
-            if (currentProductsLayout.length === 0) {
-                grid.innerHTML = '<p class="secondary-text" style="grid-column: 1/-1; text-align: center; padding: 40px;">Nenhum produto encontrado nesta categoria.</p>';
+            if (filteredCatalog.length === 0) {
+                grid.innerHTML = '<p class="secondary-text" style="grid-column: 1/-1; text-align: center; padding: 40px;">Nenhum produto encontrado para o filtro atual.</p>';
                 return;
             }
 
-            // Performance: Load only the slice chunk mapping instead of mapping the entire massive array into DOM
             const startIndex = append ? (itensExibidos - 12) : 0;
-            const endIndex = Math.min(itensExibidos, currentProductsLayout.length);
-            const itemsToDraw = currentProductsLayout.slice(startIndex, endIndex);
+            const endIndex = Math.min(itensExibidos, filteredCatalog.length);
+            const itemsToDraw = filteredCatalog.slice(startIndex, endIndex);
 
             let htmlBatch = '';
             itemsToDraw.forEach(product => {
@@ -1434,9 +1439,7 @@
                 `;
             });
 
-            // Appends securely as batch strings - prevents N squared DOM redraws
             grid.insertAdjacentHTML('beforeend', htmlBatch);
-
             renderLoadMoreBtn();
         }
 
@@ -1451,7 +1454,7 @@
                 gridNode.parentNode.insertBefore(btnContainer, gridNode.nextSibling);
             }
 
-            if (itensExibidos < currentProductsLayout.length) {
+            if (itensExibidos < filteredCatalog.length) {
                 btnContainer.innerHTML = `
                     <button id="load-more-btn" class="cta-button" style="padding: 12px 30px; font-size: 16px;">
                         Carregar Mais Produtos <i class="fas fa-chevron-down" style="margin-left: 8px;"></i>
@@ -1459,15 +1462,44 @@
                 `;
                 document.getElementById('load-more-btn').addEventListener('click', () => {
                     itensExibidos += 12;
-                    renderCatalog(currentProductsLayout, true);
+                    renderCatalog(filteredCatalog, true);
                 });
             } else {
                 btnContainer.innerHTML = '';
             }
         }
 
+        // --- BUSCA INTELIGENTE REAL-TIME ---
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const termo = e.target.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+                
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+
+                if (!termo.trim()) {
+                    document.querySelector('.category-btn').classList.add('active');
+                    itensExibidos = 12;
+                    renderCatalog(window.siteCatalog, false);
+                    return;
+                }
+
+                const tempFiltered = window.siteCatalog.filter(p => {
+                    const name = (p.name || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+                    const cat = (p.category || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+                    return name.includes(termo) || cat.includes(termo);
+                });
+
+                itensExibidos = 12;
+                renderCatalog(tempFiltered, false);
+            });
+        }
+
         function filterByCategory(category, btn) {
             itensExibidos = 12;
+
+            const sInput = document.getElementById('searchInput');
+            if (sInput) sInput.value = '';
 
             // Atualiza classe ativa nos botões
             document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
