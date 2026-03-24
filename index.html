@@ -429,8 +429,15 @@
 
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
         }
 
         .product-card {
@@ -462,22 +469,22 @@
         }
 
         .product-info {
-            padding: 20px;
+            padding: 15px;
             flex-grow: 1;
             display: flex;
             flex-direction: column;
         }
 
         .product-title {
-            font-size: 18px;
+            font-size: 15px;
             font-weight: 600;
             font-family: var(--font-logo);
-            margin-bottom: 10px;
+            margin-bottom: 6px;
         }
 
         .product-desc {
-            font-size: 14px;
-            margin-bottom: 15px;
+            font-size: 13px;
+            margin-bottom: 12px;
             flex-grow: 1;
         }
 
@@ -491,7 +498,8 @@
 
         .add-to-cart-btn {
             width: 100%;
-            padding: 12px;
+            padding: 8px;
+            font-size: 13px;
             background-color: transparent;
             color: var(--primary-graphic-color);
             border: 1px solid rgba(255, 255, 255, 0.6);
@@ -1348,8 +1356,8 @@
             cylinder.innerHTML = '';
 
             const isMobile = window.innerWidth <= 640;
-            const cardWidth = isMobile ? 200 : 250;
-            const cardHeight = isMobile ? 200 : 250;
+            const cardWidth = isMobile ? 140 : 200;
+            const cardHeight = isMobile ? 140 : 220;
 
             cylinder.style.width = `${cardWidth}px`;
             cylinder.style.height = `${cardHeight}px`;
