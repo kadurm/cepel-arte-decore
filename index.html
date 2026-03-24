@@ -1358,7 +1358,14 @@
             const cylinder = document.getElementById('carousel-cylinder');
             if (!cylinder) return;
 
-            const cards = (window.siteCatalog || []).slice(0, 12);
+            const fullCatalog = window.siteCatalog || [];
+            const premiumItems = fullCatalog.filter(item => {
+                if (!item.category) return false;
+                const cat = item.category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                return cat.includes("sofa") || cat.includes("poltrona") || cat.includes("mesa");
+            });
+
+            const cards = premiumItems.sort(() => 0.5 - Math.random()).slice(0, 9);
             const faceCount = cards.length;
             if (faceCount === 0) return;
 
@@ -1426,7 +1433,7 @@
                     </div>
                 `;
             });
-            
+
             // Appends securely as batch strings - prevents N squared DOM redraws
             grid.insertAdjacentHTML('beforeend', htmlBatch);
 
@@ -1461,7 +1468,7 @@
 
         function filterByCategory(category, btn) {
             itensExibidos = 12;
-            
+
             // Atualiza classe ativa nos botões
             document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
