@@ -1516,8 +1516,8 @@
 
                 const tempFiltered = window.siteCatalog.filter(p => {
                     const name = (p.name || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-                    const cat = (p.category || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-                    return name.includes(termo) || cat.includes(termo);
+                    const desc = (p.description || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+                    return name.includes(termo) || desc.includes(termo);
                 });
 
                 itensExibidos = 12;
