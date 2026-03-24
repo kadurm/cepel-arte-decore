@@ -6,7 +6,7 @@ const URL_SISTEMA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQLTque66Kr
 const URL_MARKETING = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTeE1RFjw_Tmg6gaeWmljnczLFn2DRQ_-K5I2S_r9TrwjMVLfK2q2i1SmZWDlljrcbN2ARromneUxf6/pub?gid=2101023602&single=true&output=csv";
 
 async function syncCatalog() {
-    console.log("Iniciando sincronização de catálogos via Google Sheets com PapaParse...");
+    console.log("Iniciando sincronização de catálogos via Google Sheets com PapaParse e Mesclagem Inteligente...");
     
     try {
         const [resSistema, resMarketing] = await Promise.all([
@@ -28,6 +28,19 @@ async function syncCatalog() {
         const dadosSistema = rawSistema.filter(item => item['Código Produto'] && String(item['Código Produto']).trim() !== '');
         const dadosMarketing = rawMarketing.filter(item => item['Código Produto'] && String(item['Código Produto']).trim() !== '');
 
+        // 2. MESCLAGEM INTELIGENTE
+        const outputPath = path.join(__dirname, '..', 'catalog.json');
+        let catalogoAntigo = [];
+        
+        if (fs.existsSync(outputPath)) {
+            try {
+                catalogoAntigo = JSON.parse(fs.readFileSync(outputPath, 'utf-8'));
+                console.log(`[Sync] Catálogo antigo carregado com sucesso (${catalogoAntigo.length} itens) para proteção das imagens raspadas/scrapeadas.`);
+            } catch (e) {
+                console.warn("[Aviso] Não foi possível ler o catalog.json antigo para mesclagem.", e.message);
+            }
+        }
+
         // Processamento em lotes (Proteção de Memória) - isolando categorias
         const categoriasUnicas = [...new Set(dadosSistema.map(item => item['Categoria']).filter(c => c))];
         console.log(`Total de categorias a processar em lotes: ${categoriasUnicas.length}`);
@@ -47,18 +60,30 @@ async function syncCatalog() {
                 const itemMarketing = dadosMarketing.find(m => m['Código Produto'] === codProduto);
 
                 if (itemMarketing) {
+                    // 3. REGRA DE PRIORIDADE NA INJEÇÃO DE IMAGENS
+                    let imagemFinal = itemMarketing['Foto'] || "";
+
+                    if (!imagemFinal) {
+                        // Planilha NÃO TEM FOTO. Busca no old JSON.
+                        const itemAntigo = catalogoAntigo.find(a => String(a.id) === String(codProduto));
+                        
+                        // SE EXISTIR NO JSON ANTIGO (injetado pelo fetch-images.js), PRESERVA A FOTO
+                        if (itemAntigo && itemAntigo.image) {
+                            imagemFinal = itemAntigo.image; 
+                        }
+                    }
+
                     catalogoFinal.push({
                         id: codProduto,
                         category: itemSistema['Categoria'] || categoria,
                         name: itemMarketing['Nome Comercial'] || "",
                         description: itemMarketing['Detalhes'] || "",
-                        image: itemMarketing['Foto'] || ""
+                        image: imagemFinal
                     });
                 }
             }
         }
 
-        const outputPath = path.join(__dirname, '..', 'catalog.json');
         fs.writeFileSync(outputPath, JSON.stringify(catalogoFinal, null, 2), 'utf-8');
         console.log(`Sucesso na automação: ${catalogoFinal.length} produtos mesclados e sincronizados com êxito!`);
     } catch (error) {

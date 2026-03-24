@@ -134,10 +134,16 @@ async function main() {
 
       if (finalUrl) {
         console.log(`   -> OK: ${finalUrl}`);
+        
+        // NOVO: INJEÇÃO DIRETA no catalog.json
+        item.image = finalUrl; // Atualiza o objeto referenciado
+        fs.writeFileSync(catalogPath, JSON.stringify(catalog, null, 2), 'utf8'); // Salva fisicamente
+
         // Tratando strings para aspas duplas de CSV
         const cleanId = item.id ? String(item.id).replace(/"/g, '""') : '';
         const cleanUrl = finalUrl.replace(/"/g, '""');
         
+        // Mantém o append no CSV como backup/log de segurança
         fs.appendFileSync(csvPath, `"${cleanId}","${cleanUrl}"\n`, 'utf8');
       } else {
         console.log(`   -> AVISO: Nenhuma imagem passou na validação estrita.`);
@@ -156,7 +162,7 @@ async function main() {
   console.log(`\n=============================================`);
   console.log(`Processo finalizado com sucesso!`);
   console.log(`Foram procuradas fotos para ${itemsWithoutImage.length} produtos.`);
-  console.log(`O resultado foi exportado para: ${csvPath}`);
+  console.log(`O resultado foi exportado para: ${csvPath} e atualizado no catalog.json diretamente.`);
   console.log(`=============================================`);
 }
 
