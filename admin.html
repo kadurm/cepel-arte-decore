@@ -581,7 +581,7 @@
                 // Sucesso UI
                 btnUpload.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Enviar Imagem e Atualizar Produto';
                 document.getElementById('upload-status').style.display = 'block';
-                document.getElementById('upload-status').innerHTML = `<i class="fa-solid fa-circle-check"></i> <b>${result.message}</b><br>Produto: ${result.productId} | Tamanho: ${result.size} bytes`;
+                document.getElementById('upload-status').innerHTML = `<i class="fa-solid fa-circle-check"></i> <b>${result.message}</b><br>Produto: ${result.productId} <br>URL: <a href="${result.imageUrl}" target="_blank" style="color:#25d366;text-decoration:underline;">Ver Imagem</a>`;
             } catch (error) {
                 console.error("Upload failed", error);
                 alert('Erro ao realizar upload da imagem.');
