@@ -21,7 +21,9 @@ jobs:
           node-version: '18'
 
       - name: Executa processamento em lotes do JS
-        run: node scripts/sync.js
+        run: |
+          npm install
+          node scripts/sync.js
 
       - name: Commit e Push do catalog.json
         run: |

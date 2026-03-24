@@ -1,63 +1,10 @@
 const fs = require('fs');
 const path = require('path');
+const Papa = require('papaparse');
 
 const URL_SISTEMA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQLTque66KreUWBmSGy9il2uB-fTZOZWwERvgZPvfvDjrSNHyP064Y0EobrJ-ecfIgDcZm_DTdKZpAx/pub?gid=2101023602&single=true&output=csv";
-const URL_MARKETING = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTeE1RFjw_Tmg6gaeWmljnczLFn2DRQ_-K5I2S_r9TrwjMVLfK2q2i1SmZWDlljrcbN2ARromneUxf6/pub?gid=2101023602&single=true&output=csv";
-
-function parseCSV(text) {
-    const result = [];
-    let row = [];
-    let cell = '';
-    let inQuotes = false;
-    for (let i = 0; i < text.length; i++) {
-        const c = text[i];
-        if (inQuotes) {
-            if (c === '"') {
-                if (i + 1 < text.length && text[i + 1] === '"') {
-                    cell += '"';
-                    i++; 
-                } else {
-                    inQuotes = false;
-                }
-            } else {
-                cell += c;
-            }
-        } else {
-            if (c === '"') {
-                inQuotes = true;
-            } else if (c === ',') {
-                row.push(cell);
-                cell = '';
-            } else if (c === '\n' || c === '\r') {
-                if (c === '\r' && i + 1 < text.length && text[i + 1] === '\n') {
-                    i++;
-                }
-                row.push(cell);
-                result.push(row);
-                row = [];
-                cell = '';
-            } else {
-                cell += c;
-            }
-        }
-    }
-    row.push(cell);
-    if (row.some(c => c !== '')) result.push(row);
-
-    if (result.length === 0) return [];
-    
-    const headers = result[0].map(h => h.replace(/^\uFEFF/, '').trim());
-    return result.slice(1).map(r => {
-        const obj = {};
-        headers.forEach((h, idx) => {
-            obj[h] = r[idx] !== undefined ? r[idx].trim() : "";
-        });
-        return obj;
-    });
-}
-
-async function syncCatalog() {
-    console.log("Iniciando sincronização de catálogos via Google Sheets...");
+const URL_MARKETING = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTeE1RFjw_Tmg6gaeWmljnczLFn2DRQ_-K5I2S_r9TrwjMVLfK2q2i1SmZWDlljrcbN2ARromneUxf6/pub?gid=2101023602&single=true&output=csv";async function syncCatalog() {
+    console.log("Iniciando sincronização de catálogos via Google Sheets com PapaParse...");
     
     try {
         const [resSistema, resMarketing] = await Promise.all([
@@ -72,8 +19,8 @@ async function syncCatalog() {
         const csvSistema = await resSistema.text();
         const csvMarketing = await resMarketing.text();
 
-        const dadosSistema = parseCSV(csvSistema);
-        const dadosMarketing = parseCSV(csvMarketing);
+        const dadosSistema = Papa.parse(csvSistema, { header: true, skipEmptyLines: true }).data;
+        const dadosMarketing = Papa.parse(csvMarketing, { header: true, skipEmptyLines: true }).data;
 
         // Processamento em lotes (Proteção de Memória) - isolando categorias
         const categoriasUnicas = [...new Set(dadosSistema.map(item => item['Categoria']).filter(c => c))];
