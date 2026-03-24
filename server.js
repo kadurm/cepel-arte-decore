@@ -4,6 +4,7 @@ const cors = require('cors');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
+const { updateProductImage } = require('./googleSheets');
 
 // Configuração Cloudinary
 cloudinary.config({
@@ -65,16 +66,20 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
 
         console.log(`[SUCESSO] Imagem hospedada com segurança em: ${uploadResult.secure_url}`);
 
+        // Integração Google Sheets
+        console.log(`[INFO] Sincronizando com a planilha mestra (Google Sheets)...`);
+        await updateProductImage(productId, uploadResult.secure_url);
+
         return res.status(200).json({
             success: true,
-            message: "Imagem enviada e hospedada com sucesso",
+            message: "Imagem enviada e Banco de Dados atualizado com sucesso!",
             productId: productId,
             imageUrl: uploadResult.secure_url
         });
 
     } catch (error) {
         console.error("[ERRO UPLOAD NUvem]", error);
-        return res.status(500).json({ error: "Erro interno no servidor ao processar o upload para a nuvem." });
+        return res.status(500).json({ error: error.message || "Erro interno no servidor ao processar o upload para a nuvem/planilha." });
     }
 });
 
