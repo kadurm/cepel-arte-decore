@@ -8,14 +8,22 @@ const { JWT } = require('google-auth-library');
  */
 async function updateProductImage(productId, imageUrl) {
     try {
+        // 0. Validação das credenciais
         if (!process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || !process.env.GOOGLE_PRIVATE_KEY || !process.env.GOOGLE_SPREADSHEET_ID) {
             throw new Error('Credenciais do Google Sheets não estão configuradas no .env');
         }
 
-        // 1. Autenticação via JWT usando Service Account
+        // 1. Parsing robusto da chave privada (fix para \n do painel Render)
+        const privateKey = process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n');
+
+        // Debug seguro (não expõe a chave completa)
+        console.log(`[Google Sheets] Service Account: ${process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL}`);
+        console.log(`[Google Sheets] Chave privada parsingada. Início: ${privateKey.substring(0, 30)}...`);
+
+        // 2. Autenticação via JWT usando Service Account
         const serviceAccountAuth = new JWT({
             email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-            key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'), // Converte quebras de linha literais
+            key: privateKey,
             scopes: ['https://www.googleapis.com/auth/spreadsheets'],
         });
 
@@ -66,7 +74,12 @@ async function updateProductImage(productId, imageUrl) {
         return true;
 
     } catch (error) {
-        console.error('[Google Sheets ERRO]', error.message);
+        console.error('[Google Sheets ERRO]', {
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+            reason: error.reason
+        });
         throw error; // Repassa pro server.js saber que parou
     }
 }

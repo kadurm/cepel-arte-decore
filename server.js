@@ -78,8 +78,16 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
         });
 
     } catch (error) {
-        console.error("[ERRO UPLOAD NUvem]", error);
-        return res.status(500).json({ error: error.message || "Erro interno no servidor ao processar o upload para a nuvem/planilha." });
+        console.error("[ERRO UPLOAD]", {
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+            reason: error.reason
+        });
+        return res.status(500).json({
+            error: error.message || "Erro interno no servidor ao processar o upload para a nuvem/planilha.",
+            details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 });
 
