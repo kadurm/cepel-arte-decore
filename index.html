@@ -1390,11 +1390,41 @@
                 const angle = i * (360 / faceCount);
                 const card = document.createElement('div');
                 card.className = 'carousel-card';
+                card.style.cursor = 'pointer';
+                card.dataset.id = product.id;
                 card.style.width = `${cardWidth}px`;
                 card.style.height = `${cardHeight}px`;
                 card.style.transform = `rotateY(${angle}deg) translateZ(${radius}px)`;
 
                 card.innerHTML = `<img src="${product.image}" alt="${product.name}" draggable="false">`;
+
+                let startXClick = 0;
+                let startYClick = 0;
+                let startTime = 0;
+
+                const onPointerDown = (e) => {
+                    const evt = e.touches ? e.touches[0] : e;
+                    startXClick = evt.pageX;
+                    startYClick = evt.pageY;
+                    startTime = Date.now();
+                };
+
+                const onPointerUp = (e) => {
+                    const evt = e.changedTouches ? e.changedTouches[0] : e;
+                    const deltaX = Math.abs(evt.pageX - startXClick);
+                    const deltaY = Math.abs(evt.pageY - startYClick);
+                    const duration = Date.now() - startTime;
+
+                    if (deltaX < 10 && deltaY < 10 && duration < 300) {
+                        addToCart(product.id);
+                    }
+                };
+
+                card.addEventListener('mousedown', onPointerDown);
+                card.addEventListener('touchstart', onPointerDown, { passive: true });
+                card.addEventListener('mouseup', onPointerUp);
+                card.addEventListener('touchend', onPointerUp, { passive: true });
+
                 cylinder.appendChild(card);
             });
 
