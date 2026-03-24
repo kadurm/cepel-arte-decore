@@ -7,43 +7,50 @@ const URL_MARKETING = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTeE1RFjw
 function parseCSV(text) {
     const result = [];
     let row = [];
+    let cell = '';
     let inQuotes = false;
-    let value = "";
-    
     for (let i = 0; i < text.length; i++) {
-        const char = text[i];
-        const nextChar = text[i+1];
-        
-        if (char === '"' && inQuotes && nextChar === '"') {
-            value += '"';
-            i++; 
-        } else if (char === '"') {
-            inQuotes = !inQuotes;
-        } else if (char === ',' && !inQuotes) {
-            row.push(value);
-            value = "";
-        } else if (char === '\n' && !inQuotes) {
-            if (value.endsWith('\r')) value = value.slice(0, -1);
-            row.push(value);
-            result.push(row);
-            row = [];
-            value = "";
+        const c = text[i];
+        if (inQuotes) {
+            if (c === '"') {
+                if (i + 1 < text.length && text[i + 1] === '"') {
+                    cell += '"';
+                    i++; 
+                } else {
+                    inQuotes = false;
+                }
+            } else {
+                cell += c;
+            }
         } else {
-            value += char;
+            if (c === '"') {
+                inQuotes = true;
+            } else if (c === ',') {
+                row.push(cell);
+                cell = '';
+            } else if (c === '\n' || c === '\r') {
+                if (c === '\r' && i + 1 < text.length && text[i + 1] === '\n') {
+                    i++;
+                }
+                row.push(cell);
+                result.push(row);
+                row = [];
+                cell = '';
+            } else {
+                cell += c;
+            }
         }
     }
-    if (value.endsWith('\r')) value = value.slice(0, -1);
-    if(value !== "" || row.length > 0) {
-        row.push(value);
-        if(row.some(v => v !== "")) result.push(row);
-    }
-    
+    row.push(cell);
+    if (row.some(c => c !== '')) result.push(row);
+
     if (result.length === 0) return [];
-    const headers = result[0].map(h => h.trim());
+    
+    const headers = result[0].map(h => h.replace(/^\uFEFF/, '').trim());
     return result.slice(1).map(r => {
         const obj = {};
         headers.forEach((h, idx) => {
-            obj[h] = r[idx] ? r[idx].trim() : "";
+            obj[h] = r[idx] !== undefined ? r[idx].trim() : "";
         });
         return obj;
     });
