@@ -1198,10 +1198,6 @@
             <p class="cart-empty-msg secondary-text">Seu carrinho está vazio.</p>
         </div>
         <div class="cart-footer">
-            <div class="cart-total">
-                <span>Total estimado:</span>
-                <span id="cart-total-price">R$ 0,00</span>
-            </div>
             <button class="checkout-btn" onclick="checkoutWhatsApp()">
                 Continuar no WhatsApp <i class="fab fa-whatsapp" style="font-size: 20px;"></i>
             </button>
@@ -1270,11 +1266,6 @@
         // --- SISTEMA DE INTEGRAÇÃO DE CATÁLOGO DINÂMICO ---
         let siteCatalog = []; // Variável global para o catálogo
         let cart = [];
-
-        const formatMoney = (value) => {
-            const num = parseFloat(value) || 0;
-            return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        };
 
         async function loadCatalog() {
             try {
@@ -1450,8 +1441,7 @@
         function updateCartUI() {
             const container = document.getElementById('cart-items-container');
             const badge = document.getElementById('cart-badge');
-            const totalEl = document.getElementById('cart-total-price');
-            let totalItems = 0; let totalPrice = 0;
+            let totalItems = 0;
 
             if (cart.length === 0) {
                 container.innerHTML = '<p class="cart-empty-msg secondary-text">Seu carrinho está vazio.</p>';
@@ -1459,13 +1449,11 @@
                 container.innerHTML = '';
                 cart.forEach(item => {
                     totalItems += item.quantity;
-                    totalPrice += (parseFloat(item.product.price) * item.quantity);
                     container.innerHTML += `
                         <div class="cart-item">
                             <img src="${item.product.image}" alt="${item.product.name}" class="cart-item-img">
                             <div class="cart-item-details">
                                 <div class="cart-item-title">${item.product.name}</div>
-                                <div class="cart-item-price">${formatMoney(item.product.price)}</div>
                                 <div class="cart-item-actions">
                                     <div class="qty-control">
                                         <button class="qty-btn" onclick="changeQty('${item.product.id}', -1)">-</button>
@@ -1480,7 +1468,6 @@
                 });
             }
             badge.innerText = totalItems;
-            totalEl.innerText = formatMoney(totalPrice);
         }
 
         function toggleCart() {
@@ -1543,15 +1530,9 @@
 
             let message = `Olá! Meu nome é ${name}. Meu endereço para entrega é: ${street}, ${number} - ${city}, CEP: ${cep}.\n\nGostaria de encomendar os seguintes itens do catálogo:\n\n`;
 
-            let total = 0;
             cart.forEach(item => {
-                const itemPrice = parseFloat(item.product.price);
-                const subtotal = itemPrice * item.quantity;
-                total += subtotal;
-                message += `▪ *${item.quantity}x* ${item.product.name} - ${formatMoney(subtotal)}\n`;
+                message += `▪ *${item.quantity}x* ${item.product.name}\n`;
             });
-
-            message += `\n*Total Estimado: ${formatMoney(total)}*`;
 
             const phone = "553832511000";
             window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
