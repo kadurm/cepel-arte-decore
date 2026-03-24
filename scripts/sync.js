@@ -3,7 +3,9 @@ const path = require('path');
 const Papa = require('papaparse');
 
 const URL_SISTEMA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQLTque66KreUWBmSGy9il2uB-fTZOZWwERvgZPvfvDjrSNHyP064Y0EobrJ-ecfIgDcZm_DTdKZpAx/pub?gid=2101023602&single=true&output=csv";
-const URL_MARKETING = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTeE1RFjw_Tmg6gaeWmljnczLFn2DRQ_-K5I2S_r9TrwjMVLfK2q2i1SmZWDlljrcbN2ARromneUxf6/pub?gid=2101023602&single=true&output=csv";async function syncCatalog() {
+const URL_MARKETING = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTeE1RFjw_Tmg6gaeWmljnczLFn2DRQ_-K5I2S_r9TrwjMVLfK2q2i1SmZWDlljrcbN2ARromneUxf6/pub?gid=2101023602&single=true&output=csv";
+
+async function syncCatalog() {
     console.log("Iniciando sincronização de catálogos via Google Sheets com PapaParse...");
     
     try {
@@ -19,8 +21,12 @@ const URL_MARKETING = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTeE1RFjw
         const csvSistema = await resSistema.text();
         const csvMarketing = await resMarketing.text();
 
-        const dadosSistema = Papa.parse(csvSistema, { header: true, skipEmptyLines: true }).data;
-        const dadosMarketing = Papa.parse(csvMarketing, { header: true, skipEmptyLines: true }).data;
+        const config = { header: true, skipEmptyLines: true, transformHeader: h => h.replace(/^\uFEFF/, '').trim() };
+        const rawSistema = Papa.parse(csvSistema, config).data;
+        const rawMarketing = Papa.parse(csvMarketing, config).data;
+
+        const dadosSistema = rawSistema.filter(item => item['Código Produto'] && String(item['Código Produto']).trim() !== '');
+        const dadosMarketing = rawMarketing.filter(item => item['Código Produto'] && String(item['Código Produto']).trim() !== '');
 
         // Processamento em lotes (Proteção de Memória) - isolando categorias
         const categoriasUnicas = [...new Set(dadosSistema.map(item => item['Categoria']).filter(c => c))];
