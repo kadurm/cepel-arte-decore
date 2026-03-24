@@ -47,8 +47,34 @@ async function main() {
 
   const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
 
-  // 1. RESET DE DADOS: Sobreescreve o arquivo CSV com apenas os cabeçalhos
-  fs.writeFileSync(csvPath, '\uFEFF"Código Produto","URL Foto Encontrada"\n', 'utf8');
+  // 1. LÓGICA DE ARQUIVO & 2. MEMÓRIA DE ESTADO: 
+  const processedIds = new Set();
+  
+  if (fs.existsSync(csvPath)) {
+    // Lendo o CSV para extrair quais códigos já processamos
+    const csvContent = fs.readFileSync(csvPath, 'utf8');
+    const lines = csvContent.split('\n');
+    
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      
+      // O formato salvo é: "Código","URL"
+      const firstQuoteIdx = line.indexOf('"');
+      const secondQuoteIdx = line.indexOf('"', firstQuoteIdx + 1);
+      
+      if (firstQuoteIdx !== -1 && secondQuoteIdx !== -1) {
+         let idString = line.substring(firstQuoteIdx + 1, secondQuoteIdx);
+         idString = idString.replace(/""/g, '"');
+         processedIds.add(String(idString));
+      }
+    }
+    console.log(`[Resume] Arquivo CSV detectado com ${processedIds.size} itens já processados. Eles serão ignorados no loop.\n`);
+  } else {
+    // Se não existir, criamos o arquivo CSV apenas com o cabeçalho
+    console.log(`[Start] Iniciando nova busca do zero...\n`);
+    fs.writeFileSync(csvPath, '\uFEFF"Código Produto","URL Foto Encontrada"\n', 'utf8');
+  }
 
   // Filtrando os itens cujo campo 'image' está vazio ou inexistente
   const itemsWithoutImage = catalog.filter(item => {
@@ -58,7 +84,6 @@ async function main() {
   console.log('=============================================');
   console.log(`Total de produtos no catálogo: ${catalog.length}`);
   console.log(`Produtos sem imagem: ${itemsWithoutImage.length}`);
-  console.log(`Iniciando busca limpa (CSV zerado)...`);
   console.log('=============================================\n');
 
   if (itemsWithoutImage.length === 0) {
@@ -69,12 +94,18 @@ async function main() {
   // Fazendo as buscas web com intervalo de segurança
   for (let i = 0; i < itemsWithoutImage.length; i++) {
     const item = itemsWithoutImage[i];
+
+    // 3. PULO INTELIGENTE (Skip): Se já processou, vá para o próximo.
+    if (processedIds.has(String(item.id))) {
+      console.log(`[${i + 1}/${itemsWithoutImage.length}] Código: ${item.id} -> Já processado anteriormente. Pulando...`);
+      continue;
+    }
     
-    // 2. Aplicando Função Sanitizadora
+    // Aplicando Função Sanitizadora
     const cleanedName = cleanSearchTerm(item.name);
     const categoria = item.category || '';
     
-    // 3. Enriquecimento de Query
+    // Enriquecimento de Query
     const searchTerm = `${cleanedName} ${categoria} móveis decoração fundo branco alta resolução`.trim();
 
     console.log(`[${i + 1}/${itemsWithoutImage.length}] Código: ${item.id} | Buscando: "${searchTerm}"`);
@@ -86,7 +117,7 @@ async function main() {
       let finalUrl = null;
 
       if (images && images.length > 0) {
-        // 4. Alfândega de URL (Validação Estrita) e 5. Filtro de Lixo
+        // Alfândega de URL (Validação Estrita) e Filtro de Lixo
         const strictRegex = /\.(jpg|jpeg|png|webp)(\?.*)?$/i;
         const trashRegex = /(icon|thumbnail|avatar|logo|base64)/i;
 
