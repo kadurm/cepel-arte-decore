@@ -31,8 +31,11 @@ const { clientEmail, privateKey } = getAuthCredentials();
 async function updateProductImage(productId, imageUrl) {
     try {
         // 0. Validação das credenciais
-        if (!clientEmail || !privateKey || !process.env.GOOGLE_SPREADSHEET_ID) {
-            throw new Error('Credenciais do Google Sheets não estão configuradas no .env');
+        if (!clientEmail || !privateKey) {
+            throw new Error('As credenciais do Google Sheets (JSON) não foram resolvidas.');
+        }
+        if (!process.env.GOOGLE_SPREADSHEET_ID) {
+            throw new Error('O ID da planilha (GOOGLE_SPREADSHEET_ID) não está configurado.');
         }
 
         console.log(`[Google Sheets] Service Account: ${clientEmail}`);
