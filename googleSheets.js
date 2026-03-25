@@ -1,6 +1,12 @@
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const { JWT } = require('google-auth-library');
 
+// Radar de variáveis de ambiente para debug
+console.log("=== RADAR DE VARIÁVEIS DE AMBIENTE ===");
+console.log("Chaves do Google encontradas no process.env:", Object.keys(process.env).filter(k => k.includes('GOOGLE')));
+console.log("Tamanho do JSON carregado:", process.env.GOOGLE_CREDENTIALS_JSON ? process.env.GOOGLE_CREDENTIALS_JSON.length : 'VARIAVEL INEXISTENTE/UNDEFINED');
+console.log("======================================");
+
 const getAuthCredentials = () => {
     if (process.env.GOOGLE_CREDENTIALS_JSON) {
         try {
