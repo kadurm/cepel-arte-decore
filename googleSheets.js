@@ -13,27 +13,31 @@ async function updateProductImage(productId, imageUrl) {
             throw new Error('Credenciais do Google Sheets não estão configuradas no .env');
         }
 
-        // 1. Funcao blindada de sanitizacao da chave RSA (fix para ERR_OSSL_UNSUPPORTED)
+        // 1. Reconstrutor Nuclear PEM (RFC 7468 - OpenSSL 3.0 Strict Mode)
         const getSanitizedPrivateKey = () => {
             let key = process.env.GOOGLE_PRIVATE_KEY || '';
-            // 1. Remove aspas apenas do inicio e fim
-            key = key.replace(/^"|"$/g, '');
-            // 2. Resolve double-escaped slashes e escaped normais
-            key = key.replace(/\\\\n/g, '\n').replace(/\\n/g, '\n');
-            // 3. Limpa carriage returns (padrao Windows) que quebram o OpenSSL
-            key = key.replace(/\r/g, '');
-
-            // LOG DE DIAGNOSTICO (Nao expoe a chave inteira, apenas a estrutura)
-            console.log("=== DEBUG DA CHAVE RSA ===");
-            console.log("Inicio correto?", key.startsWith('-----BEGIN PRIVATE KEY-----'));
-            console.log("Fim correto?", key.trim().endsWith('-----END PRIVATE KEY-----'));
-            console.log("Tem quebras de linha reais?", key.includes('\n'));
-            console.log("Tamanho da string:", key.length);
-            console.log("=========================");
-
-            return key.trim();
+            // 1. Remove qualquer aspa ou barra invertida literal
+            key = key.replace(/["']/g, '').replace(/\\n/g, '\n');
+            // 2. Arranca os cabeçalhos para isolar o hash puro
+            key = key.replace(/-----BEGIN PRIVATE KEY-----/ig, '');
+            key = key.replace(/-----END PRIVATE KEY-----/ig, '');
+            // 3. Remove TODOS os espaços, quebras de linha e sujeiras invisíveis
+            key = key.replace(/\s+/g, '');
+            // 4. Reconstrói perfeitamente em blocos exatos de 64 caracteres (Padrão PEM estrito)
+            const match = key.match(/.{1,64}/g);
+            if (match) {
+                return `-----BEGIN PRIVATE KEY-----\n${match.join('\n')}\n-----END PRIVATE KEY-----\n`;
+            }
+            return '';
         };
         const privateKey = getSanitizedPrivateKey();
+
+        // Debug de diagnóstico do PEM reconstruído
+        console.log("=== DEBUG RECONSTRUTOR PEM ===");
+        console.log("Inicio correto?", privateKey.startsWith('-----BEGIN PRIVATE KEY-----'));
+        console.log("Fim correto?", privateKey.trim().endsWith('-----END PRIVATE KEY-----'));
+        console.log("Tamanho:", privateKey.length);
+        console.log("=============================");
 
         // Debug seguro
         console.log(`[Google Sheets] Service Account: ${process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL}`);
