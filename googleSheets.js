@@ -13,8 +13,11 @@ async function updateProductImage(productId, imageUrl) {
             throw new Error('Credenciais do Google Sheets não estão configuradas no .env');
         }
 
-        // 1. Parsing robusto da chave privada (fix para \n do painel Render)
-        const privateKey = process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n');
+        // 1. Sanitizacao extrema da chave RSA (fix para ERR_OSSL_UNSUPPORTED no OpenSSL 3.0)
+        // Remove aspas literais injetadas pelo dashboard, converte \n literal para newline, apara bordas
+        const privateKey = process.env.GOOGLE_PRIVATE_KEY
+            ? process.env.GOOGLE_PRIVATE_KEY.replace(/"/g, '').replace(/\\n/g, '\n').trim()
+            : '';
 
         // Debug seguro (não expõe a chave completa)
         console.log(`[Google Sheets] Service Account: ${process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL}`);
