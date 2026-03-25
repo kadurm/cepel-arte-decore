@@ -244,7 +244,7 @@
         .image-preview-box img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             display: none;
         }
 
@@ -478,24 +478,29 @@
                 templateSelection: formatProductSelection
             });
 
-            // Carregar catálogo atual (exemplo de fetch do JSON local para listagem)
-            fetch('catalog.json')
+            // Carregar catálogo do backend (com imagens)
+            const API_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+                ? 'http://localhost:3001/api/products'
+                : 'https://cepel-backend.onrender.com/api/products';
+
+            fetch(API_URL)
                 .then(res => res.json())
                 .then(data => {
                     currentProducts = data;
                     const select = $('#product-select');
                     select.empty();
                     select.append(new Option('', '', true, true)); // placeholder empty
-                    
+
                     data.forEach(p => {
                         const option = new Option(p.name, p.id, false, false);
                         // Atrelar dados na option via jQuery pra ler no template do Select2
-                        $(option).data('code', p.id); 
+                        $(option).data('code', p.id);
+                        $(option).data('image', p.image || '');
                         select.append(option);
                     });
                     select.trigger('change');
                 })
-                .catch(err => console.error("Erro ao carregar catalog.json", err));
+                .catch(err => console.error("Erro ao carregar catálogo", err));
         });
 
         // Template do Select2 para exibir o pill de código
@@ -531,6 +536,24 @@
             checkUploadReady();
             // Reseta preview caso tenha mudado
             document.getElementById('upload-status').style.display = 'none';
+
+            // Mostrar preview da imagem existente do produto
+            const selectedOption = $('#product-select option:selected');
+            const imageUrl = selectedOption.data('image');
+
+            if (imageUrl && imageUrl.trim() !== '') {
+                // Produto TEM imagem: mostrar preview e mudar botão para "Substituir"
+                imagePreview.src = imageUrl;
+                imagePreview.style.display = 'block';
+                previewPlaceholder.style.display = 'none';
+                btnUpload.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Substituir Imagem';
+            } else {
+                // Produto NÃO tem imagem: limpar preview e manter botão como "Enviar"
+                imagePreview.src = '';
+                imagePreview.style.display = 'none';
+                previewPlaceholder.style.display = 'block';
+                btnUpload.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Enviar Imagem e Atualizar Produto';
+            }
         });
 
         function checkUploadReady() {

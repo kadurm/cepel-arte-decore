@@ -31,6 +31,34 @@ app.get('/', (req, res) => {
 });
 
 /**
+ * ROTA: Lista produtos para o admin (com imagem)
+ */
+app.get('/api/products', (req, res) => {
+    try {
+        const fs = require('fs');
+        const catalogPath = './catalog.json';
+
+        if (!fs.existsSync(catalogPath)) {
+            return res.json([]);
+        }
+
+        const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf-8'));
+
+        // Retorna apenas id, name e image (url da foto)
+        const products = catalog.map(p => ({
+            id: p.id,
+            name: p.name,
+            image: p.image || ''
+        }));
+
+        res.json(products);
+    } catch (error) {
+        console.error('[ERRO /api/products]', error.message);
+        res.status(500).json({ error: 'Erro ao carregar catálogo' });
+    }
+});
+
+/**
  * ROTA DE UPLOAD (A Recepção)
  * Recebe: arquivo em 'image', string em 'productId'
  */
