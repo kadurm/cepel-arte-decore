@@ -102,4 +102,97 @@ async function updateProductImage(productId, imageUrl) {
     }
 }
 
-module.exports = { updateProductImage };
+/**
+ * Sincroniza novos produtos da Base_Estoque para a Base_Fotos (append seletivo).
+ * Preserva dados existentes (Nome Comercial, Detalhes, Foto) e mapeia apenas a Descrição bruta do ERP.
+ * @param {Array} importedProducts - Lista de produtos importados do ERP
+ */
+async function syncEstoqueToBaseFotos(importedProducts) {
+    try {
+        // 0. Validação das credenciais
+        if (!clientEmail || !privateKey) {
+            throw new Error('As credenciais do Google Sheets (JSON) não foram resolvidas.');
+        }
+        if (!process.env.GOOGLE_SPREADSHEET_ID) {
+            throw new Error('O ID da planilha (GOOGLE_SPREADSHEET_ID) não está configurado.');
+        }
+
+        // 1. Autenticação via JWT usando Service Account
+        const serviceAccountAuth = new JWT({
+            email: clientEmail,
+            key: privateKey,
+            scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+        });
+
+        // 2. Instanciando o Documento e carregando os dados principais
+        const doc = new GoogleSpreadsheet(process.env.GOOGLE_SPREADSHEET_ID, serviceAccountAuth);
+        await doc.loadInfo();
+
+        console.log(`[Google Sheets] Conectado na planilha: "${doc.title}"`);
+
+        // 3. Acessando as abas Base_Estoque e Base_Fotos
+        const sheetEstoque = doc.sheetsByTitle['Base de Estoque'] || doc.sheetsByIndex[0];
+        const sheetFotos = doc.sheetsByTitle['Base de Fotos'];
+
+        if (!sheetFotos) {
+            throw new Error('A planilha não possui uma aba "Base de Fotos". Crie-a manualmente.');
+        }
+
+        console.log(`[Google Sheets] Base_Estoque: "${sheetEstoque.title}", Base_Fotos: "${sheetFotos.title}"`);
+
+        // 4. Ler todos os códigos já existentes na Base_Fotos
+        const fotosRows = await sheetFotos.getRows();
+        const headersFotos = sheetFotos.headerValues;
+        const codeColFotos = headersFotos.find(h => ['id', 'cód', 'código', 'codigo', 'sku', 'referência', 'Código'].some(k => k.toLowerCase().includes(h.toLowerCase())));
+
+        if (!codeColFotos) {
+            throw new Error('Base_Fotos não tem coluna de Código identificável.');
+        }
+
+        const existingCodes = new Set(fotosRows.map(row => String(row.get(codeColFotos)).trim()));
+        console.log(`[Google Sheets] ${existingCodes.size} produtos já existem na Base_Fotos.`);
+
+        // 5. Varredura cruzada: filtrar apenas produtos INÉDITOS na Base_Fotos
+        const newProducts = importedProducts.filter(p => !existingCodes.has(String(p.id)));
+        console.log(`[Google Sheets] ${newProducts.length} produtos inéditos para append na Base_Fotos.`);
+
+        if (newProducts.length === 0) {
+            console.log('[Google Sheets] Nenhum produto novo para adicionar na Base_Fotos.');
+            return { added: 0 };
+        }
+
+        // 6. Mapear cabeçalhos da Base_Fotos
+        const headersEstoque = sheetEstoque.headerValues;
+        const codeColEstoque = headersEstoque.find(h => ['id', 'cód', 'código', 'codigo', 'sku', 'referência', 'Código'].some(k => k.toLowerCase().includes(h.toLowerCase())));
+        const descColEstoque = headersEstoque.find(h => ['descrição', 'descricao', 'nome', 'produto', 'Descrição'].some(k => k.toLowerCase().includes(h.toLowerCase())));
+
+        // Headers da Base_Fotos para escrita
+        const headersFotosNormalized = headersFotos.map(h => h.toLowerCase().trim());
+        const codigoIdx = headersFotosNormalized.findIndex(h => ['código', 'codigo', 'id', 'sku', 'referência'].includes(h));
+        const descricaoIdx = headersFotosNormalized.findIndex(h => ['descrição', 'descricao'].includes(h));
+        const nomeComercialIdx = headersFotosNormalized.findIndex(h => ['nome comercial', 'nomecomercial'].includes(h));
+        const detalhesIdx = headersFotosNormalized.findIndex(h => ['detalhes', 'descricao detalhada'].includes(h));
+        const fotoIdx = headersFotosNormalized.findIndex(h => ['foto', 'imagem', 'url', 'link'].includes(h));
+
+        // 7. Append dos produtos inéditos
+        for (const product of newProducts) {
+            const rowData = [];
+            rowData[codigoIdx] = product.id;
+            rowData[descricaoIdx] = product.name; // Nome bruto do ERP vai para "Descrição"
+            // Nome Comercial, Detalhes e Foto ficam VAZIOS
+            await sheetFotos.addRow(rowData);
+        }
+
+        console.log(`[Google Sheets] Varredura concluída: ${newProducts.length} produtos inéditos injetados na Base de Fotos.`);
+        return { added: newProducts.length };
+
+    } catch (error) {
+        console.error('[Google Sheets ERRO - syncEstoqueToBaseFotos]', {
+            message: error.message,
+            stack: error.stack
+        });
+        throw error;
+    }
+}
+
+module.exports = { updateProductImage, syncEstoqueToBaseFotos, clientEmail, privateKey };

@@ -4,7 +4,7 @@ const cors = require('cors');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
-const { updateProductImage } = require('./googleSheets');
+const { updateProductImage, syncEstoqueToBaseFotos, clientEmail, privateKey } = require('./googleSheets');
 
 // Configuração Cloudinary
 cloudinary.config({
@@ -55,6 +55,79 @@ app.get('/api/products', (req, res) => {
     } catch (error) {
         console.error('[ERRO /api/products]', error.message);
         res.status(500).json({ error: 'Erro ao carregar catálogo' });
+    }
+});
+
+/**
+ * ROTA: Sincroniza ERP com Base_Estoque e faz append de novos na Base_Fotos
+ * Recebe: array de produtos no body
+ */
+app.post('/api/sync-erp', async (req, res) => {
+    try {
+        const importedProducts = req.body;
+
+        if (!Array.isArray(importedProducts) || importedProducts.length === 0) {
+            return res.status(400).json({ error: "Dados do ERP devem ser um array não vazio." });
+        }
+
+        console.log(`[POST /api/sync-erp] Recebidos ${importedProducts.length} produtos do ERP.`);
+
+        // 1. Atualizar Base_Estoque (sobrescrever integralmente)
+        const { GoogleSpreadsheet } = require('google-spreadsheet');
+        const { JWT } = require('google-auth-library');
+
+        const serviceAccountAuth = new JWT({
+            email: clientEmail,
+            key: privateKey,
+            scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+        });
+
+        const doc = new GoogleSpreadsheet(process.env.GOOGLE_SPREADSHEET_ID, serviceAccountAuth);
+        await doc.loadInfo();
+
+        const sheetEstoque = doc.sheetsByTitle['Base de Estoque'] || doc.sheetsByIndex[0];
+
+        // Limpar Base_Estoque atual
+        const estoqueRows = await sheetEstoque.getRows();
+        for (const row of estoqueRows) {
+            await row.delete();
+        }
+
+        // Recriar cabeçalhos
+        const headers = ['Código', 'Categoria', 'Nome Comercial', 'Descrição', 'Foto'];
+        await sheetEstoque.setHeader(headers);
+
+        // Inserir todos os produtos importados
+        for (const product of importedProducts) {
+            await sheetEstoque.addRow({
+                'Código': product.id,
+                'Categoria': product.category,
+                'Nome Comercial': product.name,
+                'Descrição': product.description,
+                'Foto': product.image || ''
+            });
+        }
+
+        console.log(`[Google Sheets] Base_Estoque sobrescrita com ${importedProducts.length} produtos.`);
+
+        // 2. Varredura cruzada e append na Base_Fotos
+        const result = await syncEstoqueToBaseFotos(importedProducts);
+
+        return res.status(200).json({
+            success: true,
+            message: `Base_Estoque atualizada. ${result.added} produtos inéditos adicionados à Base_Fotos.`,
+            estoqueCount: importedProducts.length,
+            fotosAdded: result.added
+        });
+
+    } catch (error) {
+        console.error("[ERRO /api/sync-erp]", {
+            message: error.message,
+            stack: error.stack
+        });
+        return res.status(500).json({
+            error: error.message || "Erro ao sincronizar com Google Sheets."
+        });
     }
 });
 

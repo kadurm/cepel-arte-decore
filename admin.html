@@ -383,6 +383,41 @@
         const btnSync = document.getElementById('btn-sync-erp');
         let processedCatalog = []; // Armazena os dados já mapeados
 
+        // Handler do botão de sincronização ERP
+        btnSync.addEventListener('click', async () => {
+            if (processedCatalog.length === 0) return;
+
+            btnSync.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sincronizando...';
+            btnSync.disabled = true;
+
+            const API_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+                ? 'http://localhost:3001/api/sync-erp'
+                : 'https://cepel-backend.onrender.com/api/sync-erp';
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(processedCatalog)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                console.log('[Sync ERP] Resultado:', result);
+                jsonPreview.textContent = JSON.stringify(result, null, 2);
+                btnSync.innerHTML = '<i class="fa-solid fa-check"></i> Sincronizado!';
+            } catch (error) {
+                console.error('[Sync ERP ERRO]', error);
+                alert('Erro ao sincronizar com Google Sheets.');
+                btnSync.innerHTML = '<i class="fa-solid fa-rotate"></i> Sincronizar com Base de Estoque';
+                btnSync.disabled = false;
+            }
+        });
+
         dropZone.addEventListener('click', () => fileInput.click());
         dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
         dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
