@@ -61,14 +61,14 @@ async function updateProductImage(productId, imageUrl) {
 
         // 5. Analisando o cabeçalho para descobrir as colunas reais (pois os nomes variam)
         const headers = sheet.headerValues;
-        let codeCol = headers.find(h => ['id', 'cód', 'código', 'codigo', 'sku', 'referência'].includes(h.toLowerCase()));
+        let codeCol = headers.find(h => ['código produto', 'codigo produto', 'id', 'cód', 'código', 'codigo', 'sku', 'referência'].includes(h.toLowerCase()));
         let imgCol = headers.find(h => ['image', 'imagem', 'foto', 'url', 'link da imagem', 'url da imagem'].includes(h.toLowerCase()));
 
         // Fallbacks caso ele tenha digitado nomes muito estranhos
         if (!codeCol) codeCol = headers[0]; 
         if (!imgCol) throw new Error('A planilha não possui uma coluna identificável para a "Imagem" ou "Foto". Por favor, nomeie uma das colunas assim.');
 
-        console.log(`[Google Sheets] Mapeamento -> Coluna Código: "${codeCol}", Coluna Imagem: "${imgCol}"`);
+        console.log(`[DEBUG] Colunas encontradas: Código="${codeCol}", Imagem="${imgCol}"`);
 
         // 6. Varrendo a coluna até achar o Produto Exato
         let targetRow = null;
@@ -223,9 +223,11 @@ async function updateProductTexts(productId, nomeComercial, detalhes) {
         const rows = await sheet.getRows();
 
         const headers = sheet.headerValues;
-        const codeCol = headers.find(h => ['id', 'cód', 'código', 'codigo', 'sku', 'referência'].includes(h.toLowerCase()));
+        const codeCol = headers.find(h => ['código produto', 'codigo produto', 'id', 'cód', 'código', 'codigo', 'sku', 'referência'].includes(h.toLowerCase()));
         const nomeComercialCol = headers.find(h => ['nome comercial', 'nomecomercial'].includes(h.toLowerCase()));
         const detalhesCol = headers.find(h => ['detalhes', 'descricao detalhada'].includes(h.toLowerCase()));
+
+        console.log(`[DEBUG] Colunas encontradas: Código="${codeCol}", Nome="${nomeComercialCol}"`);
 
         if (!codeCol) throw new Error('Coluna de Código não encontrada.');
         if (!nomeComercialCol) throw new Error('Coluna "Nome Comercial" não encontrada.');

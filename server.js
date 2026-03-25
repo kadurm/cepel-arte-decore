@@ -37,13 +37,16 @@ app.get('/', (req, res) => {
 app.get('/api/products', (req, res) => {
     try {
         const fs = require('fs');
-        const catalogPath = './catalog.json';
+        const path = require('path');
+        const catalogPath = path.resolve(__dirname, 'catalog.json');
 
         if (!fs.existsSync(catalogPath)) {
             return res.json([]);
         }
 
-        const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf-8'));
+        // Forçar leitura do arquivo físico (sem cache de require)
+        const fileContent = fs.readFileSync(catalogPath, 'utf-8');
+        const catalog = JSON.parse(fileContent);
 
         // Retorna id, name (Nome Comercial), description (Detalhes), image e erpDescription (bruta)
         const products = catalog.map(p => ({
@@ -78,7 +81,12 @@ app.put('/api/update-product-texts', async (req, res) => {
 
         // LIVE SYNC: Atualizar catálogo local imediatamente
         console.log(`[LIVE SYNC] Forçando atualização do catalog.json...`);
-        await syncCatalog().catch(e => console.error("[ERRO LIVE SYNC]", e));
+        try {
+            await syncCatalog();
+            console.log(`[LIVE SYNC] Catálogo sincronizado com sucesso.`);
+        } catch (e) {
+            console.error("[ERRO LIVE SYNC]", e);
+        }
 
         return res.status(200).json({
             success: true,
@@ -209,7 +217,12 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
 
         // LIVE SYNC: Atualizar catálogo local imediatamente
         console.log(`[LIVE SYNC] Forçando atualização do catalog.json...`);
-        await syncCatalog().catch(e => console.error("[ERRO LIVE SYNC]", e));
+        try {
+            await syncCatalog();
+            console.log(`[LIVE SYNC] Catálogo sincronizado com sucesso.`);
+        } catch (e) {
+            console.error("[ERRO LIVE SYNC]", e);
+        }
 
         return res.status(200).json({
             success: true,
