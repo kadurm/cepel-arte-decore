@@ -291,6 +291,11 @@
             transform: none;
             box-shadow: none;
         }
+
+        .text-limit-exceeded {
+            opacity: 0.6;
+            border-color: #ff4d4d !important;
+        }
     </style>
 </head>
 
@@ -298,7 +303,7 @@
     <div class="admin-container">
         <header>
             <div class="header-title">
-                <img src="LogoCepelSemFundo.png" alt="Logo Cepel" style="height: 30px; margin-right: 10px; vertical-align: middle;"> Painel Administrativo
+                <img src="LogoCepelSemFundo.png" alt="Logo Cepel" style="height: 39px; margin-right: 10px; vertical-align: middle;"> Painel Administrativo
             </div>
             <div class="tabs">
                 <button class="tab-btn active" onclick="switchTab('erp')">Importar ERP</button>
@@ -383,7 +388,7 @@
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <label>Descrição do ERP</label>
-                            <input type="text" id="edit-erp-desc" readonly style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: #f9f9f9; color: #666;">
+                            <input type="text" id="edit-description" readonly style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: #f9f9f9; color: #666;">
                         </div>
                     </div>
 
@@ -394,10 +399,10 @@
 
                     <div class="form-group">
                         <label>Detalhes (Máx 46 Caracteres Recomendados)</label>
-                        <textarea id="edit-description" rows="4" placeholder="Descreva as características, diferenciais, medidas, etc..." style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-family: var(--font-main); resize: vertical;"></textarea>
+                        <textarea id="edit-details" rows="4" placeholder="Descreva as características, diferenciais, medidas, etc..." style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-family: var(--font-main); resize: vertical;"></textarea>
                     </div>
 
-                    <button class="btn-action" id="btn-save-texts">
+                    <button class="btn-action" id="btn-save-texts" disabled>
                         <i class="fa-solid fa-floppy-disk"></i> Salvar Textos
                     </button>
                     <div id="save-texts-status" style="margin-top: 10px; font-size: 13px; color: var(--success-color); display: none;">
@@ -609,11 +614,13 @@
         // Novos elementos do formulário
         const productEditForm = document.getElementById('product-edit-form');
         const editId = document.getElementById('edit-id');
-        const editErpDesc = document.getElementById('edit-erp-desc');
+        const editDescription = document.getElementById('edit-description'); // Descrição do ERP (Readonly)
         const editName = document.getElementById('edit-name');
-        const editDescription = document.getElementById('edit-description');
+        const editDetails = document.getElementById('edit-details'); // Detalhes (Editável)
         const btnSaveTexts = document.getElementById('btn-save-texts');
         const saveTextsStatus = document.getElementById('save-texts-status');
+
+        let originalValues = { name: "", details: "" };
 
         imageInput.addEventListener('change', function() {
             const file = this.files[0];
@@ -640,6 +647,7 @@
             // Revelar formulário
             productEditForm.style.display = 'block';
             saveTextsStatus.style.display = 'none';
+            btnSaveTexts.disabled = true;
 
             // Preencher campos
             const selectedOption = $('#product-select option:selected');
@@ -647,9 +655,18 @@
             
             if (productData) {
                 editId.value = productData.id;
-                editErpDesc.value = productData.erpDescription || "";
+                editDescription.value = productData.erpDescription || ""; // Descrição bruta
                 editName.value = productData.name || "";
-                editDescription.value = productData.description || "";
+                editDetails.value = productData.description || "";
+                
+                // Armazenar originais para comparação
+                originalValues = {
+                    name: editName.value,
+                    details: editDetails.value
+                };
+
+                // Trigger listeners para validar limites iniciais
+                validateInputs();
             }
 
             checkUploadReady();
@@ -674,6 +691,25 @@
             }
         });
 
+        function validateInputs() {
+            const name = editName.value;
+            const details = editDetails.value;
+
+            // Feedback Visual de Limites
+            if (name.length > 36) editName.classList.add('text-limit-exceeded');
+            else editName.classList.remove('text-limit-exceeded');
+
+            if (details.length > 46) editDetails.classList.add('text-limit-exceeded');
+            else editDetails.classList.remove('text-limit-exceeded');
+
+            // Habilitar botão apenas se houver mudança
+            const hasChanged = name !== originalValues.name || details !== originalValues.details;
+            btnSaveTexts.disabled = !hasChanged;
+        }
+
+        editName.addEventListener('input', validateInputs);
+        editDetails.addEventListener('input', validateInputs);
+
         function checkUploadReady() {
             if (productSelect.val() && imageInput.files.length > 0) {
                 btnUpload.disabled = false;
@@ -686,7 +722,7 @@
         btnSaveTexts.addEventListener('click', async () => {
             const id = editId.value;
             const name = editName.value;
-            const description = editDescription.value;
+            const description = editDetails.value; // "description" na API mapeia para Detalhes
 
             if (!id) return;
 
@@ -711,7 +747,10 @@
                 // Sucesso UI
                 saveTextsStatus.style.display = 'block';
                 btnSaveTexts.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Salvar Textos';
-                btnSaveTexts.disabled = false;
+                btnSaveTexts.disabled = true; // Desabilita após salvar
+
+                // Atualizar originais
+                originalValues = { name, details: description };
 
                 // Atualizar dado local para não perder se trocar de produto e voltar
                 const p = currentProducts.find(item => item.id == id);
