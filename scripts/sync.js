@@ -93,4 +93,8 @@ async function syncCatalog() {
     }
 }
 
-syncCatalog();
+module.exports = { syncCatalog };
+
+if (require.main === module) {
+    syncCatalog();
+}

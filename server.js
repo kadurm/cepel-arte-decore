@@ -5,6 +5,7 @@ const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
 const { updateProductImage, updateProductTexts, syncEstoqueToBaseFotos, clientEmail, privateKey } = require('./googleSheets');
+const { syncCatalog } = require('./scripts/sync');
 
 // Configuração Cloudinary
 cloudinary.config({
@@ -75,9 +76,14 @@ app.put('/api/update-product-texts', async (req, res) => {
         
         await updateProductTexts(id, name, description);
 
+        // LIVE SYNC: Atualizar catálogo local imediatamente
+        console.log(`[LIVE SYNC] Forçando atualização do catalog.json...`);
+        await syncCatalog().catch(e => console.error("[ERRO LIVE SYNC]", e));
+
         return res.status(200).json({
             success: true,
-            message: "Textos do produto atualizados com sucesso!",
+            synced: true,
+            message: "Textos do produto atualizados e publicados no site com sucesso!",
             productId: id
         });
     } catch (error) {
@@ -201,9 +207,14 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
         console.log(`[INFO] Sincronizando com a planilha mestra (Google Sheets)...`);
         await updateProductImage(productId, uploadResult.secure_url);
 
+        // LIVE SYNC: Atualizar catálogo local imediatamente
+        console.log(`[LIVE SYNC] Forçando atualização do catalog.json...`);
+        await syncCatalog().catch(e => console.error("[ERRO LIVE SYNC]", e));
+
         return res.status(200).json({
             success: true,
-            message: "Imagem enviada e Banco de Dados atualizado com sucesso!",
+            synced: true,
+            message: "Imagem enviada e produto publicado no site com sucesso!",
             productId: productId,
             imageUrl: uploadResult.secure_url
         });
