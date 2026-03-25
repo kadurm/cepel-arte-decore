@@ -4,7 +4,7 @@ const cors = require('cors');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
-const { updateProductImage, syncEstoqueToBaseFotos, clientEmail, privateKey } = require('./googleSheets');
+const { updateProductImage, updateProductTexts, syncEstoqueToBaseFotos, clientEmail, privateKey } = require('./googleSheets');
 
 // Configuração Cloudinary
 cloudinary.config({
@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
 });
 
 /**
- * ROTA: Lista produtos para o admin (com imagem)
+ * ROTA: Lista produtos para o admin (com todos os campos)
  */
 app.get('/api/products', (req, res) => {
     try {
@@ -44,17 +44,47 @@ app.get('/api/products', (req, res) => {
 
         const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf-8'));
 
-        // Retorna apenas id, name e image (url da foto)
+        // Retorna id, name (Nome Comercial), description (Detalhes), image e erpDescription (se existir)
         const products = catalog.map(p => ({
             id: p.id,
-            name: p.name,
-            image: p.image || ''
+            name: p.name || '',
+            description: p.description || '',
+            image: p.image || '',
+            erpDescription: p.erpDescription || p.name || '' // Fallback para name se erpDescription não existir
         }));
 
         res.json(products);
     } catch (error) {
         console.error('[ERRO /api/products]', error.message);
         res.status(500).json({ error: 'Erro ao carregar catálogo' });
+    }
+});
+
+/**
+ * ROTA: Atualiza textos do produto (Nome Comercial e Detalhes)
+ */
+app.put('/api/update-product-texts', async (req, res) => {
+    try {
+        const { id, name, description } = req.body;
+
+        if (!id) {
+            return res.status(400).json({ error: "O ID do produto é obrigatório." });
+        }
+
+        console.log(`[PUT /api/update-product-texts] Atualizando textos para o produto: ${id}`);
+        
+        await updateProductTexts(id, name, description);
+
+        return res.status(200).json({
+            success: true,
+            message: "Textos do produto atualizados com sucesso!",
+            productId: id
+        });
+    } catch (error) {
+        console.error("[ERRO UPDATE TEXTS]", error);
+        return res.status(500).json({
+            error: error.message || "Erro ao atualizar textos do produto."
+        });
     }
 });
 

@@ -195,4 +195,65 @@ async function syncEstoqueToBaseFotos(importedProducts) {
     }
 }
 
-module.exports = { updateProductImage, syncEstoqueToBaseFotos, clientEmail, privateKey };
+/**
+ * Atualiza os textos do produto (Nome Comercial e Detalhes) na Base de Fotos.
+ * @param {string} productId - O Código/ID do produto
+ * @param {string} nomeComercial - O novo Nome Comercial
+ * @param {string} detalhes - Os novos Detalhes
+ */
+async function updateProductTexts(productId, nomeComercial, detalhes) {
+    try {
+        if (!clientEmail || !privateKey) {
+            throw new Error('As credenciais do Google Sheets (JSON) não foram resolvidas.');
+        }
+        if (!process.env.GOOGLE_SPREADSHEET_ID) {
+            throw new Error('O ID da planilha (GOOGLE_SPREADSHEET_ID) não está configurado.');
+        }
+
+        const serviceAccountAuth = new JWT({
+            email: clientEmail,
+            key: privateKey,
+            scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+        });
+
+        const doc = new GoogleSpreadsheet(process.env.GOOGLE_SPREADSHEET_ID, serviceAccountAuth);
+        await doc.loadInfo();
+
+        const sheet = doc.sheetsByTitle['Base de Fotos'] || doc.sheetsByTitle['Base de Estoque'] || doc.sheetsByIndex[0];
+        const rows = await sheet.getRows();
+
+        const headers = sheet.headerValues;
+        const codeCol = headers.find(h => ['id', 'cód', 'código', 'codigo', 'sku', 'referência'].includes(h.toLowerCase()));
+        const nomeComercialCol = headers.find(h => ['nome comercial', 'nomecomercial'].includes(h.toLowerCase()));
+        const detalhesCol = headers.find(h => ['detalhes', 'descricao detalhada'].includes(h.toLowerCase()));
+
+        if (!codeCol) throw new Error('Coluna de Código não encontrada.');
+        if (!nomeComercialCol) throw new Error('Coluna "Nome Comercial" não encontrada.');
+        if (!detalhesCol) throw new Error('Coluna "Detalhes" não encontrada.');
+
+        let targetRow = null;
+        for (let row of rows) {
+            if (String(row.get(codeCol)).trim() === String(productId).trim()) {
+                targetRow = row;
+                break;
+            }
+        }
+
+        if (!targetRow) {
+            throw new Error(`O Produto com código "${productId}" não foi encontrado na planilha.`);
+        }
+
+        targetRow.set(nomeComercialCol, nomeComercial);
+        targetRow.set(detalhesCol, detalhes);
+        await targetRow.save();
+
+        console.log(`[Google Sheets] Textos do produto "${productId}" atualizados com sucesso.`);
+        return true;
+
+    } catch (error) {
+        console.error('[Google Sheets ERRO]', error);
+        throw error;
+    }
+}
+
+module.exports = { updateProductImage, updateProductTexts, syncEstoqueToBaseFotos, clientEmail, privateKey };

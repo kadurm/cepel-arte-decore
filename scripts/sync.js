@@ -78,6 +78,7 @@ async function syncCatalog() {
                         category: itemSistema['Categoria'] || categoria,
                         name: itemMarketing['Nome Comercial'] || "",
                         description: itemMarketing['Detalhes'] || "",
+                        erpDescription: itemSistema['Descrição'] || itemSistema['PRODUTO'] || itemSistema['Nome'] || "",
                         image: imagemFinal
                     });
                 }
