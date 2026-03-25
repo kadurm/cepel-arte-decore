@@ -13,15 +13,30 @@ async function updateProductImage(productId, imageUrl) {
             throw new Error('Credenciais do Google Sheets não estão configuradas no .env');
         }
 
-        // 1. Sanitizacao extrema da chave RSA (fix para ERR_OSSL_UNSUPPORTED no OpenSSL 3.0)
-        // Remove aspas literais injetadas pelo dashboard, converte \n literal para newline, apara bordas
-        const privateKey = process.env.GOOGLE_PRIVATE_KEY
-            ? process.env.GOOGLE_PRIVATE_KEY.replace(/"/g, '').replace(/\\n/g, '\n').trim()
-            : '';
+        // 1. Funcao blindada de sanitizacao da chave RSA (fix para ERR_OSSL_UNSUPPORTED)
+        const getSanitizedPrivateKey = () => {
+            let key = process.env.GOOGLE_PRIVATE_KEY || '';
+            // 1. Remove aspas apenas do inicio e fim
+            key = key.replace(/^"|"$/g, '');
+            // 2. Resolve double-escaped slashes e escaped normais
+            key = key.replace(/\\\\n/g, '\n').replace(/\\n/g, '\n');
+            // 3. Limpa carriage returns (padrao Windows) que quebram o OpenSSL
+            key = key.replace(/\r/g, '');
 
-        // Debug seguro (não expõe a chave completa)
+            // LOG DE DIAGNOSTICO (Nao expoe a chave inteira, apenas a estrutura)
+            console.log("=== DEBUG DA CHAVE RSA ===");
+            console.log("Inicio correto?", key.startsWith('-----BEGIN PRIVATE KEY-----'));
+            console.log("Fim correto?", key.trim().endsWith('-----END PRIVATE KEY-----'));
+            console.log("Tem quebras de linha reais?", key.includes('\n'));
+            console.log("Tamanho da string:", key.length);
+            console.log("=========================");
+
+            return key.trim();
+        };
+        const privateKey = getSanitizedPrivateKey();
+
+        // Debug seguro
         console.log(`[Google Sheets] Service Account: ${process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL}`);
-        console.log(`[Google Sheets] Chave privada parsingada. Início: ${privateKey.substring(0, 30)}...`);
 
         // 2. Autenticação via JWT usando Service Account
         const serviceAccountAuth = new JWT({
