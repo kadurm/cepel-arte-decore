@@ -298,7 +298,7 @@
     <div class="admin-container">
         <header>
             <div class="header-title">
-                <i class="fa-solid fa-shapes"></i> Painel Administrativo
+                <img src="LogoCepelSemFundo.png" alt="Logo Cepel" style="height: 30px; margin-right: 10px; vertical-align: middle;"> Painel Administrativo
             </div>
             <div class="tabs">
                 <button class="tab-btn active" onclick="switchTab('erp')">Importar ERP</button>
@@ -346,59 +346,62 @@
 
             <!-- Novo Formulário de Cadastro (Edição de Textos) -->
             <div id="product-edit-form" style="display: none; background: rgba(0,0,0,0.02); padding: 25px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.05); margin-bottom: 30px;">
-                <h3 style="font-family: var(--font-logo); font-size: 18px; margin-bottom: 20px; color: var(--primary-graphic-color);">Dados do Produto</h3>
                 
-                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px; margin-bottom: 20px;">
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label>Código</label>
-                        <input type="text" id="edit-id" readonly style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: #f9f9f9; color: #666;">
+                <h3 style="font-family: var(--font-logo); font-size: 18px; margin-bottom: 20px; color: var(--primary-graphic-color);">Mídia do Produto</h3>
+                <div class="image-upload-wrapper" style="margin-bottom: 30px;">
+                    <div class="image-preview-box" id="preview-box">
+                        <div class="image-preview-placeholder" id="preview-placeholder">
+                            <i class="fa-regular fa-image"></i>
+                            <p style="font-size: 12px;">Sem imagem</p>
+                        </div>
+                        <img id="image-preview" src="" alt="Preview">
                     </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label>Descrição do ERP</label>
-                        <input type="text" id="edit-erp-desc" readonly style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: #f9f9f9; color: #666;">
+                    
+                    <div class="upload-controls">
+                        <div class="form-group">
+                            <label>Arquivo de Imagem (JPG, PNG, WEBP)</label>
+                            <input type="file" id="image-input" accept="image/*" style="display: block; width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+                        </div>
+                        
+                        <button class="btn-action" id="btn-upload-image" disabled>
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Enviar Imagem e Atualizar Produto
+                        </button>
+                        
+                        <div id="upload-status" style="margin-top: 15px; font-size: 13px; color: var(--success-color); display: none;">
+                            <i class="fa-solid fa-circle-check"></i> Upload concluído! URL vinculada ao produto.
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Nome Comercial (Como aparecerá no site)</label>
-                    <input type="text" id="edit-name" placeholder="Ex: Cadeira de Jantar Velvet Blue" style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
-                </div>
-
-                <div class="form-group">
-                    <label>Detalhes (Descrição detalhada, medidas, etc)</label>
-                    <textarea id="edit-description" rows="4" placeholder="Descreva as características técnicas e diferenciais do produto..." style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-family: var(--font-main); resize: vertical;"></textarea>
-                </div>
-
-                <button class="btn-action" id="btn-save-texts">
-                    <i class="fa-solid fa-floppy-disk"></i> Salvar Textos
-                </button>
-                <div id="save-texts-status" style="margin-top: 10px; font-size: 13px; color: var(--success-color); display: none;">
-                    <i class="fa-solid fa-circle-check"></i> Dados salvos com sucesso na planilha!
-                </div>
-            </div>
-
-            <h3 style="font-family: var(--font-logo); font-size: 18px; margin-bottom: 20px; color: var(--primary-graphic-color);">Mídia do Produto</h3>
-            <div class="image-upload-wrapper">
-                <div class="image-preview-box" id="preview-box">
-                    <div class="image-preview-placeholder" id="preview-placeholder">
-                        <i class="fa-regular fa-image"></i>
-                        <p style="font-size: 12px;">Sem imagem</p>
+                <div id="text-form-panel">
+                    <h3 style="font-family: var(--font-logo); font-size: 18px; margin-bottom: 20px; color: var(--primary-graphic-color);">Dados do Produto</h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px; margin-bottom: 20px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Código</label>
+                            <input type="text" id="edit-id" readonly style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: #f9f9f9; color: #666;">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Descrição do ERP</label>
+                            <input type="text" id="edit-erp-desc" readonly style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: #f9f9f9; color: #666;">
+                        </div>
                     </div>
-                    <img id="image-preview" src="" alt="Preview">
-                </div>
-                
-                <div class="upload-controls">
+
                     <div class="form-group">
-                        <label>Arquivo de Imagem (JPG, PNG, WEBP)</label>
-                        <input type="file" id="image-input" accept="image/*" style="display: block; width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+                        <label>Nome Comercial (Máx 36 Caracteres Recomendados)</label>
+                        <input type="text" id="edit-name" placeholder="Ex: Cadeira de Jantar Velvet Blue" style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
                     </div>
-                    
-                    <button class="btn-action" id="btn-upload-image" disabled>
-                        <i class="fa-solid fa-cloud-arrow-up"></i> Enviar Imagem e Atualizar Produto
+
+                    <div class="form-group">
+                        <label>Detalhes (Máx 46 Caracteres Recomendados)</label>
+                        <textarea id="edit-description" rows="4" placeholder="Descreva as características, diferenciais, medidas, etc..." style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-family: var(--font-main); resize: vertical;"></textarea>
+                    </div>
+
+                    <button class="btn-action" id="btn-save-texts">
+                        <i class="fa-solid fa-floppy-disk"></i> Salvar Textos
                     </button>
-                    
-                    <div id="upload-status" style="margin-top: 15px; font-size: 13px; color: var(--success-color); display: none;">
-                        <i class="fa-solid fa-circle-check"></i> Upload concluído! URL vinculada ao produto.
+                    <div id="save-texts-status" style="margin-top: 10px; font-size: 13px; color: var(--success-color); display: none;">
+                        <i class="fa-solid fa-circle-check"></i> Dados salvos com sucesso na planilha!
                     </div>
                 </div>
             </div>

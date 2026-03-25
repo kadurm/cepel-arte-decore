@@ -44,13 +44,13 @@ app.get('/api/products', (req, res) => {
 
         const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf-8'));
 
-        // Retorna id, name (Nome Comercial), description (Detalhes), image e erpDescription (se existir)
+        // Retorna id, name (Nome Comercial), description (Detalhes), image e erpDescription (bruta)
         const products = catalog.map(p => ({
             id: p.id,
             name: p.name || '',
             description: p.description || '',
             image: p.image || '',
-            erpDescription: p.erpDescription || p.name || '' // Fallback para name se erpDescription não existir
+            erpDescription: p.erpDescription || ''
         }));
 
         res.json(products);
