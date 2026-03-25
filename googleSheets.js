@@ -1,6 +1,28 @@
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const { JWT } = require('google-auth-library');
 
+const getAuthCredentials = () => {
+    if (process.env.GOOGLE_CREDENTIALS_JSON) {
+        try {
+            const creds = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
+            console.log("[Google Sheets] Credenciais JSON parseadas com sucesso.");
+            return {
+                clientEmail: creds.client_email,
+                privateKey: creds.private_key
+            };
+        } catch (e) {
+            console.error("[Google Sheets ERRO] Falha no parse do JSON:", e.message);
+        }
+    }
+    // Fallback para desenvolvimento local
+    return {
+        clientEmail: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+        privateKey: (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n')
+    };
+};
+
+const { clientEmail, privateKey } = getAuthCredentials();
+
 /**
  * Conecta-se à API do Google Sheets e atualiza a célula da Imagem do produto específico.
  * @param {string} productId - O Código/ID do produto
@@ -9,42 +31,15 @@ const { JWT } = require('google-auth-library');
 async function updateProductImage(productId, imageUrl) {
     try {
         // 0. Validação das credenciais
-        if (!process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || !process.env.GOOGLE_PRIVATE_KEY || !process.env.GOOGLE_SPREADSHEET_ID) {
+        if (!clientEmail || !privateKey || !process.env.GOOGLE_SPREADSHEET_ID) {
             throw new Error('Credenciais do Google Sheets não estão configuradas no .env');
         }
 
-        // 1. Reconstrutor Nuclear PEM (RFC 7468 - OpenSSL 3.0 Strict Mode)
-        const getSanitizedPrivateKey = () => {
-            let key = process.env.GOOGLE_PRIVATE_KEY || '';
-            // 1. Remove qualquer aspa ou barra invertida literal
-            key = key.replace(/["']/g, '').replace(/\\n/g, '\n');
-            // 2. Arranca os cabeçalhos para isolar o hash puro
-            key = key.replace(/-----BEGIN PRIVATE KEY-----/ig, '');
-            key = key.replace(/-----END PRIVATE KEY-----/ig, '');
-            // 3. Remove TODOS os espaços, quebras de linha e sujeiras invisíveis
-            key = key.replace(/\s+/g, '');
-            // 4. Reconstrói perfeitamente em blocos exatos de 64 caracteres (Padrão PEM estrito)
-            const match = key.match(/.{1,64}/g);
-            if (match) {
-                return `-----BEGIN PRIVATE KEY-----\n${match.join('\n')}\n-----END PRIVATE KEY-----\n`;
-            }
-            return '';
-        };
-        const privateKey = getSanitizedPrivateKey();
-
-        // Debug de diagnóstico do PEM reconstruído
-        console.log("=== DEBUG RECONSTRUTOR PEM ===");
-        console.log("Inicio correto?", privateKey.startsWith('-----BEGIN PRIVATE KEY-----'));
-        console.log("Fim correto?", privateKey.trim().endsWith('-----END PRIVATE KEY-----'));
-        console.log("Tamanho:", privateKey.length);
-        console.log("=============================");
-
-        // Debug seguro
-        console.log(`[Google Sheets] Service Account: ${process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL}`);
+        console.log(`[Google Sheets] Service Account: ${clientEmail}`);
 
         // 2. Autenticação via JWT usando Service Account
         const serviceAccountAuth = new JWT({
-            email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+            email: clientEmail,
             key: privateKey,
             scopes: ['https://www.googleapis.com/auth/spreadsheets'],
         });
