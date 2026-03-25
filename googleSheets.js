@@ -1,26 +1,18 @@
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const { JWT } = require('google-auth-library');
 
-// Radar de variáveis de ambiente para debug
-console.log("=== RADAR DE VARIÁVEIS DE AMBIENTE ===");
-console.log("Chaves do Google encontradas no process.env:", Object.keys(process.env).filter(k => k.includes('GOOGLE')));
-console.log("Tamanho do JSON carregado:", process.env.GOOGLE_CREDENTIALS_JSON ? process.env.GOOGLE_CREDENTIALS_JSON.length : 'VARIAVEL INEXISTENTE/UNDEFINED');
-console.log("======================================");
-
 const getAuthCredentials = () => {
-    if (process.env.GOOGLE_CREDENTIALS_JSON) {
+    if (process.env.GOOGLE_CREDENTIALS_BASE64) {
         try {
-            const creds = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
-            console.log("[Google Sheets] Credenciais JSON parseadas com sucesso.");
-            return {
-                clientEmail: creds.client_email,
-                privateKey: creds.private_key
-            };
+            const decodedJson = Buffer.from(process.env.GOOGLE_CREDENTIALS_BASE64, 'base64').toString('utf-8');
+            const creds = JSON.parse(decodedJson);
+            console.log("[Google Sheets] Credenciais Base64 decodificadas com sucesso absoluto.");
+            return { clientEmail: creds.client_email, privateKey: creds.private_key };
         } catch (e) {
-            console.error("[Google Sheets ERRO] Falha no parse do JSON:", e.message);
+            console.error("[Google Sheets ERRO] Falha ao decodificar Base64:", e.message);
         }
     }
-    // Fallback para desenvolvimento local
+    // Fallback original
     return {
         clientEmail: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
         privateKey: (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n')
