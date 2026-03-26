@@ -208,7 +208,7 @@
             align-items: center;
             justify-content: center;
             touch-action: pan-y;
-            margin: 20px 0 40px 0;
+            margin: 10px 0 20px 0;
             cursor: grab;
             user-select: none;
         }
@@ -1012,9 +1012,9 @@
 
     <header>
         <div class="container header-content">
-            <div class="logo" onclick="switchPage('home')" title="Página Inicial">
+            <a href="#inicio" class="logo" onclick="switchPage('home')" title="Página Inicial">
                 <img src="LogoCepelSemFundo.png" alt="Cepel Arte Decore" class="logo-img">
-            </div>
+            </a>
 
             <nav class="nav-links">
                 <a href="#inicio" onclick="switchPage('home')" id="link-home" class="active">Início</a>
@@ -1035,9 +1035,9 @@
 
             <section class="hero-3d-section">
                 <div class="container">
-                    <h1>Móveis de Alto Padrão em Bocaiúva</h1>
+                    <h1>Móveis de Alto Padrão</h1>
                     <p class="secondary-text">Descubra móveis incríveis que vão durar para a vida inteira. A sua
-                        principal loja de móveis em Minas Gerais.</p>
+                        principal loja de móveis no Norte de Minas Gerais.</p>
 
                     <div class="carousel-container" id="carousel-container">
                         <div class="carousel-scene">
@@ -1078,12 +1078,13 @@
             <section id="avaliacoes" class="reviews">
                 <div class="container">
                     <h2 class="section-title">O que nossos clientes dizem</h2>
-                    <div class="google-rating">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
-                            class="fas fa-star"></i><i class="fas fa-star"></i>
+                    <div class="google-rating" style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                        <div class="stars-row" style="color: #fbbc04;">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                                class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
                         <span
-                            style="font-family: var(--font-logo); font-weight: 600; margin-left: 10px; font-size: 16px;">5,0
-                            (Avaliações no Google)</span>
+                            style="font-family: var(--font-logo); font-weight: 600; font-size: 16px;">(Avaliações no Google)</span>
                     </div>
 
                     <div class="reviews-grid" id="dynamic-reviews-grid">
