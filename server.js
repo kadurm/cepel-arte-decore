@@ -32,6 +32,44 @@ app.get('/', (req, res) => {
 });
 
 /**
+ * GATILHO: Dispara GitHub Action para atualizar o catálogo no repositório (Vercel Source)
+ * @param {object} payload - Dados do produto a ser atualizado
+ */
+async function triggerGithubUpdate(payload) {
+    const GITHUB_PAT = process.env.GITHUB_PAT;
+    const REPO = "kadurm/cepel-arte-decore";
+
+    if (!GITHUB_PAT) {
+        console.warn("[WARNING] GITHUB_PAT não configurado. Live Sync via GitHub Actions desabilitado.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`https://api.github.com/repos/${REPO}/dispatches`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/vnd.github.v3+json',
+                'Authorization': `Bearer ${GITHUB_PAT}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                event_type: 'update-single-item',
+                client_payload: payload
+            })
+        });
+
+        if (response.ok) {
+            console.log(`[GITHUB] Gatilho enviado com sucesso para: ${payload.id || payload.productId}`);
+        } else {
+            const err = await response.json();
+            console.error("[GITHUB ERROR]", err);
+        }
+    } catch (error) {
+        console.error("[GITHUB FETCH ERROR]", error);
+    }
+}
+
+/**
  * ROTA: Lista produtos para o admin (com todos os campos)
  */
 app.get('/api/products', (req, res) => {
@@ -84,14 +122,8 @@ app.put('/api/update-product-texts', async (req, res) => {
         
         await updateProductTexts(id, name, description);
 
-        // LIVE SYNC: Atualizar catálogo local imediatamente
-        console.log(`[LIVE SYNC] Forçando atualização do catalog.json...`);
-        try {
-            await syncCatalog();
-            console.log(`[LIVE SYNC] Catálogo sincronizado com sucesso.`);
-        } catch (e) {
-            console.error("[ERRO LIVE SYNC]", e);
-        }
+        // GITHUB SYNC: Dispara action para atualizar o JSON no repositório (Vercel)
+        await triggerGithubUpdate({ id, name, description });
 
         return res.status(200).json({
             success: true,
@@ -220,14 +252,8 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
         console.log(`[INFO] Sincronizando com a planilha mestra (Google Sheets)...`);
         await updateProductImage(productId, uploadResult.secure_url);
 
-        // LIVE SYNC: Atualizar catálogo local imediatamente
-        console.log(`[LIVE SYNC] Forçando atualização do catalog.json...`);
-        try {
-            await syncCatalog();
-            console.log(`[LIVE SYNC] Catálogo sincronizado com sucesso.`);
-        } catch (e) {
-            console.error("[ERRO LIVE SYNC]", e);
-        }
+        // GITHUB SYNC: Dispara action para atualizar o JSON no repositório (Vercel)
+        await triggerGithubUpdate({ id: productId, image: uploadResult.secure_url });
 
         return res.status(200).json({
             success: true,

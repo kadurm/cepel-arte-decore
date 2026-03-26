@@ -1,0 +1,64 @@
+name: Update Single Product in Catalog
+
+on:
+  repository_dispatch:
+    types: [update-single-item]
+
+jobs:
+  update-json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Update catalog.json
+        run: |
+          node -e "
+            const fs = require('fs');
+            const path = './catalog.json';
+            const payload = ${{ toJson(github.event.client_payload) }};
+            
+            if (!fs.existsSync(path)) {
+              console.error('catalog.json not found');
+              process.exit(1);
+            }
+
+            let catalog = JSON.parse(fs.readFileSync(path, 'utf8'));
+            let found = false;
+
+            catalog = catalog.map(item => {
+              if (String(item.id) === String(payload.id)) {
+                found = true;
+                return {
+                  ...item,
+                  name: payload.name !== undefined ? payload.name : item.name,
+                  description: payload.description !== undefined ? payload.description : item.description,
+                  image: payload.image !== undefined ? payload.image : item.image
+                };
+              }
+              return item;
+            });
+
+            if (!found) {
+              console.warn('Product not found in catalog:', payload.id, '. Skipping update.');
+              process.exit(0);
+            }
+
+            fs.writeFileSync(path, JSON.stringify(catalog, null, 2), 'utf8');
+            console.log('Product updated successfully:', payload.id);
+          "
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name 'Cepel Admin Bot'
+          git config --global user.email 'bot@cepelartedecore.com.br'
+          git add catalog.json
+          git commit -m "chore: update product ${{ github.event.client_payload.id }} via admin" || echo "No changes to commit"
+          git push origin main
