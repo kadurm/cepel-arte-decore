@@ -296,6 +296,85 @@
             opacity: 0.6;
             border-color: #ff4d4d !important;
         }
+
+        /* --- RESPONSIVIDADE MOBILE --- */
+        @media (max-width: 768px) {
+            .admin-container {
+                margin: 20px auto;
+                padding: 0 15px;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 20px;
+                padding: 15px;
+                text-align: center;
+            }
+
+            .header-title {
+                font-size: 22px;
+                justify-content: center;
+            }
+
+            .header-title img {
+                height: 30px !important;
+            }
+
+            .tabs {
+                width: 100%;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .tab-btn {
+                width: 100%;
+                padding: 10px;
+                font-size: 15px;
+            }
+
+            .tab-content {
+                padding: 20px 15px;
+            }
+
+            h2.section-title {
+                font-size: 20px;
+            }
+
+            .image-upload-wrapper {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .image-preview-box {
+                width: 100%;
+                max-width: 250px;
+                height: 250px;
+            }
+
+            .upload-controls {
+                width: 100%;
+            }
+
+            #product-edit-form {
+                padding: 15px;
+            }
+
+            #product-edit-form div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+                gap: 15px !important;
+            }
+
+            .btn-action {
+                width: 100%;
+                justify-content: center;
+            }
+
+            /* Forçar Select2 a ocupar 100% no mobile */
+            .select2-container {
+                width: 100% !important;
+            }
+        }
     </style>
 </head>
 
