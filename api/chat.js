@@ -22,43 +22,82 @@ module.exports = async (req, res) => {
     try {
         const { userDesc } = req.body;
 
-        // Busca o catÃ¡logo via HTTP para mÃ¡xima seguranÃ§a na Vercel
+        // 1. Busca o catálogo via HTTP para máxima segurança na Vercel
         const protocol = req.headers['x-forwarded-proto'] || 'https';
         const host = req.headers.host;
-        let catalogDataString = "[]";
+        let catalogData = [];
         
         try {
             const catalogResponse = await fetch(`${protocol}://${host}/catalog.json`);
             if (catalogResponse.ok) {
-                const catalogData = await catalogResponse.json();
-                catalogDataString = JSON.stringify(catalogData);
+                catalogData = await catalogResponse.json();
             }
         } catch (fetchErr) {
-            console.error("Erro ao buscar catÃ¡logo via HTTP:", fetchErr);
+            console.error("Erro ao buscar catálogo via HTTP:", fetchErr);
         }
+
+        // 2. Pré-filtro Semântico (Mini-RAG): Extração de palavras-chave
+        const cleanPrompt = (userDesc || "").toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove acentos
+            .replace(/[^\w\s]/gi, ''); // Remove pontuação
+        
+        const stopWords = ['o', 'a', 'os', 'as', 'de', 'da', 'do', 'em', 'para', 'com', 'um', 'uma', 'e', 'que', 'do', 'da', 'no', 'na'];
+        const keywords = cleanPrompt.split(/\s+/).filter(word => word.length > 2 && !stopWords.includes(word));
+
+        // 3. Score de relevância
+        let scoredProducts = catalogData.map(item => {
+            let score = 0;
+            const name = (item.name || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const category = (item.category || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const description = (item.description || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            keywords.forEach(kw => {
+                if (name.includes(kw)) score += 10;
+                if (category.includes(kw)) score += 5;
+                if (description.includes(kw)) score += 2;
+            });
+
+            return { ...item, score };
+        });
+
+        // 4. Seleção dos top 15 (ou aleatórios se score for 0)
+        scoredProducts.sort((a, b) => b.score - a.score);
+        let topProducts = scoredProducts.slice(0, 15);
+        
+        // Se nenhum bateu, pegamos 15 aleatórios para manter a IA criativa
+        if (topProducts[0]?.score === 0) {
+            topProducts = catalogData.sort(() => 0.5 - Math.random()).slice(0, 15);
+        }
+
+        // 5. Redução Drástica de Payload (Objeto Mínimo)
+        const minimalCatalog = topProducts.map(p => ({
+            id: p.id,
+            nome: p.name,
+            categoria: p.category,
+            detalhes: p.description
+        }));
 
         const genAI = new GoogleGenerativeAI(apiKey);
         
         // Uso de model-config para garantir resposta JSON pura (Schema Enforcement)
         const model = genAI.getGenerativeModel({ 
-            model: 'gemini-2.5-flash',
+            model: 'gemini-1.5-flash',
             generationConfig: { responseMimeType: 'application/json' }
         });
         
-        const systemPrompt = `VocÃª Ã© um consultor e designer de interiores de alto padrÃ£o da loja 'Cepel Arte Decore'. 
-Seu objetivo Ã© vender os produtos do catÃ¡logo apresentando dicas de design elegantes.
+        const systemPrompt = `Atue como um designer de interiores da Cepel Arte Decore. O cliente pediu: '${userDesc || "Gostaria de renovar meu ambiente."}'. 
+
+Baseado EXCLUSIVAMENTE nesta lista de produtos disponíveis em nosso estoque:
+${JSON.stringify(minimalCatalog)}
 
 REGRAS ABSOLUTAS:
-1. ForneÃ§a exatamente 2 dicas de decoraÃ§Ã£o extremamente sucintas, profissionais e persuasivas.
-2. NUNCA finalize com uma pergunta. Sempre termine o texto com uma forte Chamada para Ação (CTA) persuasiva e direta, incentivando a compra imediata. Convide o cliente a adicionar o produto ao carrinho agora mesmo.
-3. Analise o catÃ¡logo abaixo e escolha obrigatoriamente 1 (um) produto que melhor se encaixe na descriÃ§Ã£o do cliente.
-4. Sua resposta completa em texto deve ter no mÃ¡ximo 250 caracteres. Seja extremamente conciso e direto.
-5. NUNCA mencione preÃ§os ou valores nas suas respostas. O foco Ã© vender o design e convidar o cliente para o WhatsApp para consultar os valores.
+1. Crie uma recomendação curta, aconchegante e vendedora sugerindo no máximo 3 itens.
+2. Forneça exatamente 2 dicas de decoração extremamente sucintas, profissionais e persuasivas.
+3. NUNCA finalize com uma pergunta. Sempre termine o texto com uma forte Chamada para Ação (CTA) persuasiva e direta, incentivando a compra imediata. Convide o cliente a adicionar o produto ao carrinho agora mesmo.
+4. Sua resposta completa em texto deve ter no máximo 250 caracteres. Seja extremamente conciso e direto.
+5. NUNCA mencione preços ou valores nas suas respostas. O foco é vender o design e convidar o cliente para o WhatsApp para consultar os valores.
 
-CATÃLOGO ATUAL:
-${catalogDataString}
-
-VocÃª deve responder OBRIGATORIAMENTE no formato JSON abaixo:
+Você deve responder OBRIGATORIAMENTE no formato JSON abaixo:
 {
   "texto_dica": "Seu texto com as 2 dicas e a CTA final de fechamento.",
   "produto_recommended_id": "ID_DO_PRODUTO"
