@@ -1008,7 +1008,7 @@
     </style>
 </head>
 
-<body>
+<body id="inicio">
 
     <header>
         <div class="container header-content">
@@ -1017,10 +1017,10 @@
             </div>
 
             <nav class="nav-links">
-                <a onclick="switchPage('home')" id="link-home" class="active">Início</a>
-                <a onclick="switchPage('catalog')" id="link-catalog">Catálogo</a>
-                <a onclick="switchPage('home'); setTimeout(()=>window.location.hash='#avaliacoes', 100);">Avaliações</a>
-                <a onclick="switchPage('home'); setTimeout(()=>window.location.hash='#contato', 100);">Contato</a>
+                <a href="#inicio" onclick="switchPage('home')" id="link-home" class="active">Início</a>
+                <a href="#catalogo" onclick="switchPage('catalog')" id="link-catalog">Catálogo</a>
+                <a href="#avaliacoes" onclick="switchPage('home'); setTimeout(()=>window.location.hash='#avaliacoes', 100);">Avaliações</a>
+                <a href="#sobre" onclick="switchPage('home'); setTimeout(()=>window.location.hash='#sobre', 100);">Sobre</a>
 
                 <div class="cart-icon-wrapper" onclick="toggleCart()">
                     <i class="fas fa-shopping-cart"></i>
@@ -1095,7 +1095,7 @@
                 </div>
             </section>
 
-            <section id="contato" class="contact">
+            <section id="sobre" class="contact">
                 <div class="container">
                     <h2 class="section-title" style="text-align: center;">Visite Nossa Loja</h2>
                     <div class="contact-grid">
@@ -1675,9 +1675,22 @@
             openCheckoutModal();
         }
 
+        // --- SISTEMA DE ROTEAMENTO INTELIGENTE (RELOAD F5) ---
+        function handleRouting() {
+            const hash = window.location.hash;
+            if (hash === '#catalogo') {
+                switchPage('catalog');
+            } else if (hash) {
+                // Se for qualquer outro hash (#avaliacoes, #sobre, etc), limpa e vai pro topo
+                history.replaceState(null, null, window.location.pathname);
+                window.scrollTo(0, 0);
+            }
+        }
+
         window.onload = () => {
             loadCatalog();
             loadGoogleReviews();
+            handleRouting();
         };
 
         // --- INTEGRAÇÃO GOOGLE AVALIAÇÕES ---
