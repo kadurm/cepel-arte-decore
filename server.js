@@ -35,6 +35,11 @@ app.get('/', (req, res) => {
  * ROTA: Lista produtos para o admin (com todos os campos)
  */
 app.get('/api/products', (req, res) => {
+    // Cache-busting agressivo: Impedir cache de borda e de navegador
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+
     try {
         const fs = require('fs');
         const path = require('path');

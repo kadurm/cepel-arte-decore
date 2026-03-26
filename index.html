@@ -1292,7 +1292,7 @@
 
         async function loadCatalog() {
             try {
-                const response = await fetch('./catalog.json');
+                const response = await fetch('./catalog.json?t=' + new Date().getTime(), { cache: 'no-store' });
                 if (!response.ok) throw new Error("Catálogo não encontrado");
 
                 siteCatalog = await response.json();
