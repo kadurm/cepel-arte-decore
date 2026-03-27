@@ -1534,7 +1534,7 @@
                 if (!termo.trim()) {
                     document.querySelector('.category-btn').classList.add('active');
                     itensExibidos = 12;
-                    renderCatalog(window.siteCatalog, false);
+                    filterByCategory('Todos', document.querySelector('.category-btn'));
                     return;
                 }
 
@@ -1547,6 +1547,14 @@
                 itensExibidos = 12;
                 renderCatalog(tempFiltered, false);
             });
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
         }
 
         function filterByCategory(category, btn) {
@@ -1562,7 +1570,29 @@
             // Filtra os dados da variável global
             let filteredProducts = [];
             if (category === 'Todos') {
-                filteredProducts = window.siteCatalog;
+                const featured = [];
+                let remaining = [...window.siteCatalog];
+
+                // Diversity Algorithm: 1 amostra de cada categoria no topo
+                allowedCategories.forEach(catName => {
+                    const catProductsIndices = remaining.reduce((acc, p, idx) => {
+                        if (p.category === catName) acc.push(idx);
+                        return acc;
+                    }, []);
+
+                    if (catProductsIndices.length > 0) {
+                        const randomIdxOfIndices = Math.floor(Math.random() * catProductsIndices.length);
+                        const actualIdx = catProductsIndices[randomIdxOfIndices];
+                        featured.push(remaining[actualIdx]);
+                        remaining.splice(actualIdx, 1);
+                    }
+                });
+
+                // Duplo Embaralhamento
+                shuffleArray(featured);
+                shuffleArray(remaining);
+                
+                filteredProducts = [...featured, ...remaining];
             } else {
                 filteredProducts = window.siteCatalog.filter(p => p.category === category);
             }
