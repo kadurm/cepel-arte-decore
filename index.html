@@ -1549,6 +1549,8 @@
             });
         }
 
+        const normalizeCat = (str) => str ? str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() : '';
+
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -1573,18 +1575,17 @@
                 const featured = [];
                 let remaining = [...window.siteCatalog];
 
-                // Diversity Algorithm: 1 amostra de cada categoria no topo
+                // Diversity Algorithm Blindado
                 allowedCategories.forEach(catName => {
-                    const catProductsIndices = remaining.reduce((acc, p, idx) => {
-                        if (p.category === catName) acc.push(idx);
-                        return acc;
-                    }, []);
+                    const normTarget = normalizeCat(catName);
+                    const matchIdx = remaining.findIndex(p => {
+                        const normProd = normalizeCat(p.category);
+                        return normProd === normTarget || normProd.includes(normTarget);
+                    });
 
-                    if (catProductsIndices.length > 0) {
-                        const randomIdxOfIndices = Math.floor(Math.random() * catProductsIndices.length);
-                        const actualIdx = catProductsIndices[randomIdxOfIndices];
-                        featured.push(remaining[actualIdx]);
-                        remaining.splice(actualIdx, 1);
+                    if (matchIdx !== -1) {
+                        featured.push(remaining[matchIdx]);
+                        remaining.splice(matchIdx, 1);
                     }
                 });
 
@@ -1594,10 +1595,16 @@
                 
                 filteredProducts = [...featured, ...remaining];
             } else {
-                filteredProducts = window.siteCatalog.filter(p => p.category === category);
+                const normTarget = normalizeCat(category);
+                filteredProducts = window.siteCatalog.filter(p => {
+                    const normProd = normalizeCat(p.category);
+                    return normProd === normTarget || normProd.includes(normTarget);
+                });
             }
 
-            // Renderiza apenas os filtrados
+            // Renderiza apenas os filtrados (Limpando o grid antes)
+            const grid = document.getElementById('product-grid');
+            if (grid) grid.innerHTML = '';
             renderCatalog(filteredProducts, false);
         }
 
