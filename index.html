@@ -1308,9 +1308,9 @@
                 
                 window.siteCatalog = siteCatalog; // Mantendo referência global conforme solicitado
 
-                // Renderização inicial
-                renderCatalog(siteCatalog);
+                // Renderização inicial com algoritmo de diversidade
                 renderCategoryButtons();
+                filterByCategory('Todos', document.querySelector('.category-btn'));
                 init3DCarousel();
 
             } catch (error) {
