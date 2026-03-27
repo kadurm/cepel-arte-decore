@@ -1288,6 +1288,7 @@
         }
 
         // --- SISTEMA DE INTEGRAÇÃO DE CATÁLOGO DINÂMICO ---
+        const allowedCategories = ['Aparadores', 'Buffet', 'Cadeiras', 'Camas', 'Guarda Roupa', 'Mesas de jantar', 'Mesas para área externa', 'Painéis', 'Poltronas', 'Sofás'];
         let siteCatalog = []; // Variável global para o catálogo
         let cart = [];
 
@@ -1296,11 +1297,20 @@
                 const response = await fetch('./catalog.json?t=' + new Date().getTime(), { cache: 'no-store' });
                 if (!response.ok) throw new Error("Catálogo não encontrado");
 
-                siteCatalog = await response.json();
+                const rawData = await response.json();
+                
+                // Filtro Global (Leão de Chácara)
+                siteCatalog = rawData.filter(product => {
+                    if (!product.category) return false;
+                    const prodCat = product.category.trim().toLowerCase();
+                    return allowedCategories.some(allowed => allowed.toLowerCase() === prodCat);
+                });
+                
                 window.siteCatalog = siteCatalog; // Mantendo referência global conforme solicitado
 
                 // Renderização inicial
                 renderCatalog(siteCatalog);
+                renderCategoryButtons();
                 init3DCarousel();
 
             } catch (error) {
@@ -1435,6 +1445,19 @@
         // --- SISTEMA CATÁLOGO ---
         let itensExibidos = 12;
         let filteredCatalog = [];
+
+        function renderCategoryButtons() {
+            const container = document.getElementById('catalog-categories');
+            if (!container) return;
+
+            let html = `<button class="category-btn active" onclick="filterByCategory('Todos', this)">Todos</button>`;
+            
+            allowedCategories.forEach(cat => {
+                html += `<button class="category-btn" onclick="filterByCategory('${cat}', this)">${cat}</button>`;
+            });
+
+            container.innerHTML = html;
+        }
 
         function renderCatalog(productsToRender, append = false) {
             const grid = document.getElementById('product-grid');
